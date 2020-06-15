@@ -3,7 +3,7 @@
    ZeckLyn
   <br>
   
-  ##  The .NET Compiler Platform ("ZeckLyn")
+  ##  The .NET Compiler ("ZeckLyn")
   
 </h1>
 
