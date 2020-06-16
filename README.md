@@ -1,9 +1,9 @@
 
 <h1 align="center">
-   ZeckCoding
+   ZeckLyn
   <br>
   
-  ##  The .NET Compiler Platform ("ZeckCoding")
+  ##  The .NET Compiler ("ZeckLyn")
   
 </h1>
 
@@ -12,7 +12,7 @@
 
 <br>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Zeckoxe/ZeckCoding/blob/master/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Zeckoxe/ZeckLyn/blob/master/LICENSE)
 
 The code is licensed under MIT. Feel free to use it for whatever purpose.
 
