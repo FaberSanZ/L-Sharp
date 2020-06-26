@@ -7,64 +7,34 @@ namespace ZeckLyn
     public enum TokenType
     {
         // Single-character tokens
-        LEFT_PAREN,
-        RIGHT_PAREN,
-        LEFT_BRACE,
-        RIGHT_BRACE,
-        COMMA,
-        DOT,
-        MINUS,
-        PLUS,
-        SEMICOLON,
-        SLASH,
-        STAR,
+        NumberToken,
 
-        // One ot two character tokens
-        BANG,
-        BANG_EQUAL,
-        EQUAL,
-        EQUAL_EQUAL,
-        GREATER,
-        GREATER_EQUAL,
-        LESS,
-        LESS_EQUAL,
+        WhitespaceToken,
 
-        /* Literals: Numbers and string are literals.
-         * Since the scanner has to walk each character in the literal to correctly identify it,
-         * it can also convert it to the real runtime that will be used by the interpreter later */
-        IDENTIFIER,
-        STRING,
-        [TokenText("int")] NUMBER,
+        [TokenText("+")]
+        PlusToken,
 
-        /* Keywords:
-         * Boolean keywords */
-        [TokenText("True")]
-        TRUE,
+        [TokenText("-")]
+        MinusToken,
 
-        [TokenText("False")]
-        FALSE,
+        StarToken,
 
-        [TokenText("||")]
-        AND,
+        SlashToken,
 
-        [TokenText("&&")]
-        OR,
-        IF,
-        ELSE,
-        // Functional and value keywords
-        VAR,
-        NIL,
-        RETURN,
-        FUN,
-        THIS,
-        CLASS,
-        SUPER,
-        // Function keywords
-        FOR,
-        WHILE,
-        PRINT,
+        [TokenText("(")]
+        OpenParenthesisToken,
 
-        // End Of File
-        EOF
+        [TokenText(")")]
+        CloseParenthesisToken,
+
+        BadToken,
+
+        EndOfFileToken,
+
+        NumberExpression,
+
+        BinaryExpression,
+
+        ParenthesizedExpression
     }
 }

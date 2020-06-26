@@ -4,8 +4,7 @@ using System.Text;
 
 namespace ZeckLyn
 {
-    public class Token
+    public class BinaryExpressionSyntax
     {
-
     }
 }
