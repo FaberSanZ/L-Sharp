@@ -5,14 +5,14 @@ using System.Reflection;
 
 namespace ZeckLyn
 {
-    internal static class TokenTypeExtensions
+    internal static class SyntaxKindExtensions
     {
-        private static readonly Dictionary<TokenType, string> TokenTexts = new Dictionary<TokenType, string>();
+        private static readonly Dictionary<SyntaxKind, string> TokenTexts = new Dictionary<SyntaxKind, string>();
 
 
-        static TokenTypeExtensions()
+        static SyntaxKindExtensions()
         {
-            Type t = typeof(TokenType);
+            Type t = typeof(SyntaxKind);
 
             IEnumerable<FieldInfo> members = t.GetTypeInfo().DeclaredFields.Where(field => field.IsPublic && field.IsStatic);
 
@@ -22,19 +22,19 @@ namespace ZeckLyn
                 TokenTextAttribute tokenText = field.GetCustomAttribute<TokenTextAttribute>();
                 if (tokenText != null)
                 {
-                    TokenType type = (TokenType)field.GetValue(default);
+                    SyntaxKind type = (SyntaxKind)field.GetValue(default);
                     TokenTexts.Add(type, tokenText.Text);
                 }
             }
         }
 
 
-        public static bool HasText(this TokenType type)
+        public static bool HasText(this SyntaxKind type)
         {
             return TokenTexts.ContainsKey(type);
         }
 
-        public static string ToText(this TokenType type)
+        public static string ToText(this SyntaxKind type)
         {
             TokenTexts.TryGetValue(type, out string value);
             return value;

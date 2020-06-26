@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZeckLyn
 {
-    public enum TokenType
+    public enum SyntaxKind
     {
         // Single-character tokens
         NumberToken,
