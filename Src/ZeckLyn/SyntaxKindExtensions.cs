@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+
+/*=============================================================================
+	SyntaxKindExtensions.cs
+=============================================================================*/
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,7 +24,7 @@ namespace ZeckLyn
             IEnumerable<FieldInfo> members = t.GetTypeInfo().DeclaredFields.Where(field => field.IsPublic && field.IsStatic);
 
 
-            foreach (var field in members)
+            foreach (FieldInfo field in members)
             {
                 TokenTextAttribute tokenText = field.GetCustomAttribute<TokenTextAttribute>();
                 if (tokenText != null)

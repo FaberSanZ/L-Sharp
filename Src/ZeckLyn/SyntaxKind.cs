@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+
+/*=============================================================================
+	SyntaxKind.cs
+=============================================================================*/
+
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,26 +13,21 @@ namespace ZeckLyn
 {
     public enum SyntaxKind
     {
-        // Single-character tokens
-        NumberToken,
+        [TokenText("#")] NumberToken,
+
+        [TokenText("+")] PlusToken,
+
+        [TokenText("-")] MinusToken,
+
+        [TokenText("/")] SlashToken,
+
+        [TokenText("*")]  StarToken,
+
+        [TokenText("(")] OpenParenthesisToken,
+
+        [TokenText(")")] CloseParenthesisToken,
 
         WhitespaceToken,
-
-        [TokenText("+")]
-        PlusToken,
-
-        [TokenText("-")]
-        MinusToken,
-
-        StarToken,
-
-        SlashToken,
-
-        [TokenText("(")]
-        OpenParenthesisToken,
-
-        [TokenText(")")]
-        CloseParenthesisToken,
 
         BadToken,
 

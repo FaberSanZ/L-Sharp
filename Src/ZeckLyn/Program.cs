@@ -1,19 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace ZeckLyn
 {
-
-    class Program
+    internal class Program
     {
         private static void Main(string[] args)
         {
-            var s = TokenType.CloseParenthesisToken.ToText();
-            Console.WriteLine(s);
+            for (; ; )
+            {
+                Console.Write(">>");
+                string line = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    return;
+                }
+                Lexer lexer = new Lexer(line);
+                while (true)
+                {
+                    SyntaxToken token = lexer.NexToken();
+                    if (token.Kind == SyntaxKind.EndOfFileToken)
+                    {
+                        break;
+                    }
+
+                    Console.Write($"{token.Kind}: '{token.Text}'");
+                    if (token.Value != null)
+                    {
+                        Console.Write($"Value: {token.Value}");
+                    }
+
+                    Console.WriteLine();
+                }
+
+
+            }
+
+
+
         }
 
-        
     }
 }
 
