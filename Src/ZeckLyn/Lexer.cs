@@ -4,12 +4,6 @@
 	Lexer.cs
 =============================================================================*/
 
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 namespace ZeckLyn
 {
 
@@ -46,9 +40,9 @@ namespace ZeckLyn
                     Next();
                 }
 
-                var length = _position - start;
-                var text = _text.Substring(start, length);
-                int.TryParse(text, out var value);
+                int length = _position - start;
+                string text = _text.Substring(start, length);
+                int.TryParse(text, out int value);
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
             if (char.IsWhiteSpace(Current))
@@ -60,10 +54,10 @@ namespace ZeckLyn
                     Next();
                 }
 
-                var length = _position - start;
-                var text = _text.Substring(start, length);
-                int.TryParse(text, out var value);
-                return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, value);
+                int length = _position - start;
+                string text = _text.Substring(start, length);
+                //int.TryParse(text, out var value);
+                return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
             }
 
 

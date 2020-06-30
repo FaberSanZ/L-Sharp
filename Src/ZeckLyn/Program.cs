@@ -23,10 +23,10 @@ namespace ZeckLyn
                         break;
                     }
 
-                    Console.Write($"{token.Kind}: '{token.Text}'");
+                    Console.Write($"{token.Kind.ToText()}: {token.Kind} = '{token.Text}'");
                     if (token.Value != null)
                     {
-                        Console.Write($"Value: {token.Value}");
+                        Console.Write($" Value: {token.Value}");
                     }
 
                     Console.WriteLine();
