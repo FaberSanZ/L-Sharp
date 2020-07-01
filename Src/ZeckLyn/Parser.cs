@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ZeckLyn
 {
     public class Parser
     {
         private readonly SyntaxToken[] _tokens;
-        private readonly int _position;
+        private int _position;
 
         public Parser(string text)
         {
@@ -28,7 +29,7 @@ namespace ZeckLyn
         }
 
 
-        public SyntaxToken Curren => Peek(0);
+        public SyntaxToken Current => Peek(0);
 
 
         internal SyntaxToken Peek(int offset)
@@ -41,6 +42,48 @@ namespace ZeckLyn
             }
 
             return _tokens[_position];
+        }
+
+
+        public SyntaxToken NextToken()
+        {
+            SyntaxToken current = Current;
+            _position++;
+
+            return current;
+        }
+
+
+        public SyntaxToken Match(SyntaxKind kind)
+        {
+
+            if (Current.Kind == kind )
+            {
+                NextToken();
+            }
+
+            return new SyntaxToken(kind, Current.Position, null, null);
+        }
+
+        public ExpressionSyntax Parse()
+        {
+            var left = ParsePrymaryExpression();
+
+            while (Current.Kind == SyntaxKind.PlusToken || Current.Kind == SyntaxKind.MinusToken)
+            {
+                var operatorToken = NextToken();
+                var right = ParsePrymaryExpression();
+                left = new BinaryExpressionSyntax(left, operatorToken, right);
+            }
+
+
+            return left;
+        }
+
+        internal ExpressionSyntax ParsePrymaryExpression()
+        {
+            var numberToken = Match(SyntaxKind.NumberToken);
+            return new NumberExpressionSyntax(numberToken);
         }
     }
 }

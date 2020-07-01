@@ -11,7 +11,7 @@ using System.Text;
 
 namespace ZeckLyn
 {
-    abstract class SyntaxNode
+    public abstract class SyntaxNode
     {
         public abstract SyntaxKind Kind { get; }
 

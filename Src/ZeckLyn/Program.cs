@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace ZeckLyn
 {
@@ -14,29 +15,43 @@ namespace ZeckLyn
                 {
                     return;
                 }
-                Lexer lexer = new Lexer(line);
-                while (true)
-                {
-                    SyntaxToken token = lexer.NexToken();
-                    if (token.Kind == SyntaxKind.EndOfFileToken)
-                    {
-                        break;
-                    }
 
-                    Console.Write($"{token.Kind.ToText()}: {token.Kind} = '{token.Text}'");
-                    if (token.Value != null)
-                    {
-                        Console.Write($" Value: {token.Value}");
-                    }
+                Parser parse = new Parser(line);
 
-                    Console.WriteLine();
-                }
+                ExpressionSyntax ex = parse.Parse();
 
+                PrettyPrint(ex);
 
             }
 
 
 
+        }
+
+        private static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
+        {
+            string marker = isLast ? "└──" : "├──";
+
+            Console.Write(indent);
+            Console.Write(marker);
+            Console.Write(node.Kind);
+
+            if (node is SyntaxToken t && t.Value != null)
+            {
+                Console.Write(" ");
+                Console.Write(t.Value);
+            }
+
+            Console.WriteLine();
+
+            indent += isLast ? "    " : "│   ";
+
+            SyntaxNode lastChild = node.GetChildren().LastOrDefault();
+
+            foreach (SyntaxNode child in node.GetChildren())
+            {
+                PrettyPrint(child, indent, child == lastChild);
+            }
         }
 
     }
