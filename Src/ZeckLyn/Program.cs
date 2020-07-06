@@ -7,21 +7,57 @@ namespace ZeckLyn
     {
         private static void Main(string[] args)
         {
-            for (; ; )
+            bool showTree = false;
+
+            while (true)
             {
-                Console.Write(">>");
+                Console.Write("> ");
                 string line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                 {
                     return;
                 }
 
-                Parser parse = new Parser(line);
+                if (line == "#showTree")
+                {
+                    showTree = !showTree;
+                    Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees");
+                    continue;
+                }
+                else if (line == "#clear")
+                {
+                    Console.Clear();
+                    continue;
+                }
 
-                ExpressionSyntax ex = parse.Parse();
+                SyntaxTree syntaxTree = SyntaxTree.Parse(line);
 
-                PrettyPrint(ex);
+                if (showTree)
+                {
+                    ConsoleColor color = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    PrettyPrint(syntaxTree.Root);
+                    Console.ForegroundColor = color;
+                }
 
+                if (!syntaxTree.Diagnostics.Any())
+                {
+                    Evaluator e = new Evaluator(syntaxTree.Root);
+                    int result = e.Evaluate();
+                    Console.WriteLine(result);
+                }
+                else
+                {
+                    ConsoleColor color = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+
+                    foreach (string diagnostic in syntaxTree.Diagnostics)
+                    {
+                        Console.WriteLine(diagnostic);
+                    }
+
+                    Console.ForegroundColor = color;
+                }
             }
 
 

@@ -13,19 +13,26 @@ namespace ZeckLyn
 {
     public enum SyntaxKind
     {
-        [TokenText("#")] NumberToken,
+        [TokenText("#")] 
+        NumberToken,
 
-        [TokenText("+")] PlusToken,
+        [TokenText("+")] 
+        PlusToken,
 
-        [TokenText("-")] MinusToken,
+        [TokenText("-")] 
+        MinusToken,
 
-        [TokenText("/")] SlashToken,
+        [TokenText("/")] 
+        SlashToken,
 
-        [TokenText("*")]  StarToken,
+        [TokenText("*")]  
+        StarToken,
 
-        [TokenText("(")] OpenParenthesisToken,
+        [TokenText("(")] 
+        OpenParenthesisToken,
 
-        [TokenText(")")] CloseParenthesisToken,
+        [TokenText(")")] 
+        CloseParenthesisToken,
 
         WhitespaceToken,
 

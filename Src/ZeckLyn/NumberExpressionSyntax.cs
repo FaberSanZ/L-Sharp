@@ -8,19 +8,17 @@ namespace ZeckLyn
 {
     public sealed partial class NumberExpressionSyntax : ExpressionSyntax
     {
-        public NumberExpressionSyntax(SyntaxToken numbertoken)
+        public NumberExpressionSyntax(SyntaxToken numberToken)
         {
-            Numbertoken = numbertoken;
-
+            NumberToken = numberToken;
         }
 
-        public override SyntaxKind Kind => SyntaxKind.BadToken;
-
-        public SyntaxToken Numbertoken { get; }
+        public override SyntaxKind Kind => SyntaxKind.NumberExpression;
+        public SyntaxToken NumberToken { get; }
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {
-            yield return Numbertoken;
+            yield return NumberToken;
         }
     }
 }

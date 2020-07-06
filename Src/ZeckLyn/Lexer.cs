@@ -24,7 +24,7 @@ namespace ZeckLyn
             _position++;
         }
 
-        public SyntaxToken NexToken()
+        public SyntaxToken NextToken()
         {
             if (_position >= _text.Length)
             {
@@ -65,31 +65,37 @@ namespace ZeckLyn
             {
                 case '+':
                     Next();
-                    return new SyntaxToken(SyntaxKind.PlusToken, _position, "+", null);
+                    SyntaxKind plusToken = SyntaxKind.PlusToken;
+                    return new SyntaxToken(plusToken, _position, plusToken.ToText(), plusToken.ToText());
 
                 case '-':
                     Next();
-                    return new SyntaxToken(SyntaxKind.MinusToken, _position, "-", null);
+                    SyntaxKind minusToken = SyntaxKind.MinusToken;
+                    return new SyntaxToken(minusToken, _position, minusToken.ToText(), minusToken.ToText());
 
 
                 case '*':
                     Next();
-                    return new SyntaxToken(SyntaxKind.StarToken, _position, "*", null);
+                    SyntaxKind starToken = SyntaxKind.StarToken;
+                    return new SyntaxToken(starToken, _position, starToken.ToText(), starToken.ToText());
 
 
                 case '/':
                     Next();
-                    return new SyntaxToken(SyntaxKind.SlashToken, _position, "/", null);
+                    SyntaxKind slashToken = SyntaxKind.SlashToken;
+                    return new SyntaxToken(slashToken, _position, slashToken.ToText(), null);
 
 
                 case '(':
                     Next();
-                    return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _position, "(", null);
+                    SyntaxKind openParenthesisToken = SyntaxKind.SlashToken;
+                    return new SyntaxToken(openParenthesisToken, _position, openParenthesisToken.ToText(), null);
 
 
                 case ')':
                     Next();
-                    return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position, ")", null);
+                    SyntaxKind closeParenthesisToken = SyntaxKind.SlashToken;
+                    return new SyntaxToken(closeParenthesisToken, _position, closeParenthesisToken.ToText(), null);
 
 
                 default:
