@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+
+/*=============================================================================
+	Parser.cs
+=============================================================================*/
+
+
+using System.Collections.Generic;
 
 namespace ZeckLyn
 {
@@ -11,6 +18,7 @@ namespace ZeckLyn
 
         public Parser(string text)
         {
+            _position = 0;
             List<SyntaxToken> tokens = new List<SyntaxToken>();
 
             Lexer lexer = new Lexer(text);
@@ -19,8 +27,7 @@ namespace ZeckLyn
             {
                 token = lexer.NextToken();
 
-                if (token.Kind != SyntaxKind.WhitespaceToken &&
-                    token.Kind != SyntaxKind.BadToken)
+                if (token.Kind != SyntaxKind.WhitespaceToken && token.Kind != SyntaxKind.BadToken)
                 {
                     tokens.Add(token);
                 }

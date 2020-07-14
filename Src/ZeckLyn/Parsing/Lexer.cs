@@ -15,6 +15,7 @@ namespace ZeckLyn
         public Lexer(string text)
         {
             _text = text;
+            _position = 0;
         }
 
         public char Current => _position >= _text.Length ? '\0' : _text[_position];

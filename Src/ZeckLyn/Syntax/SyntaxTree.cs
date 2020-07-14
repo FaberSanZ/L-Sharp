@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+
+/*=============================================================================
+	SyntaxTree.cs
+=============================================================================*/
+
+
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ZeckLyn

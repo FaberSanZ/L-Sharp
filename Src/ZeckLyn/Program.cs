@@ -7,11 +7,11 @@ namespace ZeckLyn
     {
         private static void Main(string[] args)
         {
-            bool showTree = false;
+            bool showTree = true;
 
-            while (true)
+            for (; ; )
             {
-                Console.Write("> ");
+                Console.Write(">> ");
                 string line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                 {
@@ -20,7 +20,7 @@ namespace ZeckLyn
 
                 if (line == "#showTree")
                 {
-                    showTree = !showTree;
+                    showTree = true;
                     Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees");
                     continue;
                 }
