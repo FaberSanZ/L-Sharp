@@ -25,7 +25,7 @@ namespace ZeckLyn
             SyntaxToken token;
             do
             {
-                token = lexer.NextToken();
+                token = lexer.Lex();
 
                 if (token.Kind != SyntaxKind.WhitespaceToken && token.Kind != SyntaxKind.BadToken)
                 {
@@ -52,14 +52,14 @@ namespace ZeckLyn
 
         private SyntaxToken Current => Peek(0);
 
-        internal SyntaxToken NextToken()
+        private SyntaxToken NextToken()
         {
             SyntaxToken current = Current;
             _position++;
             return current;
         }
 
-        private SyntaxToken Match(SyntaxKind kind)
+        private SyntaxToken MatchToken(SyntaxKind kind)
         {
             if (Current.Kind == kind)
             {
@@ -70,44 +70,48 @@ namespace ZeckLyn
             return new SyntaxToken(kind, Current.Position, null, null);
         }
 
-        private ExpressionSyntax ParseExpression()
-        {
-            return ParseTerm();
-        }
-
         public SyntaxTree Parse()
         {
-            ExpressionSyntax expresion = ParseTerm();
-            SyntaxToken endOfFileToken = Match(SyntaxKind.EndOfFileToken);
+            ExpressionSyntax expresion = ParseExpression();
+            SyntaxToken endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
             return new SyntaxTree(_diagnostics, expresion, endOfFileToken);
         }
 
-        private ExpressionSyntax ParseTerm()
+        private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
         {
-            ExpressionSyntax left = ParseFactor();
+            ExpressionSyntax left = ParsePrimaryExpression();
 
-            while (Current.Kind == SyntaxKind.PlusToken || Current.Kind == SyntaxKind.MinusToken)
+            while (true)
             {
+                int precedence = GetBinaryOperatorPrecedence(Current.Kind);
+                if (precedence == 0 || precedence <= parentPrecedence)
+                {
+                    break;
+                }
+
                 SyntaxToken operatorToken = NextToken();
-                ExpressionSyntax right = ParseFactor();
+                ExpressionSyntax right = ParseExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
             return left;
         }
 
-        private ExpressionSyntax ParseFactor()
+        private static int GetBinaryOperatorPrecedence(SyntaxKind kind)
         {
-            ExpressionSyntax left = ParsePrimaryExpression();
-
-            while (Current.Kind == SyntaxKind.StarToken || Current.Kind == SyntaxKind.SlashToken)
+            switch (kind)
             {
-                SyntaxToken operatorToken = NextToken();
-                ExpressionSyntax right = ParsePrimaryExpression();
-                left = new BinaryExpressionSyntax(left, operatorToken, right);
-            }
+                case SyntaxKind.StarToken:
+                case SyntaxKind.SlashToken:
+                    return 2;
 
-            return left;
+                case SyntaxKind.PlusToken:
+                case SyntaxKind.MinusToken:
+                    return 1;
+
+                default:
+                    return 0;
+            }
         }
 
         private ExpressionSyntax ParsePrimaryExpression()
@@ -116,12 +120,12 @@ namespace ZeckLyn
             {
                 SyntaxToken left = NextToken();
                 ExpressionSyntax expression = ParseExpression();
-                SyntaxToken right = Match(SyntaxKind.CloseParenthesisToken);
+                SyntaxToken right = MatchToken(SyntaxKind.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left, expression, right);
             }
 
-            SyntaxToken numberToken = Match(SyntaxKind.NumberToken);
-            return new NumberExpressionSyntax(numberToken);
+            SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);
+            return new LiteralExpressionSyntax(numberToken);
         }
     }
 }

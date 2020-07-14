@@ -18,16 +18,16 @@ namespace ZeckLyn
                     return;
                 }
 
-                if (line == "#showTree")
+                switch (line)
                 {
-                    showTree = true;
-                    Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees");
-                    continue;
-                }
-                else if (line == "#clear")
-                {
-                    Console.Clear();
-                    continue;
+                    case "#showTree":
+                        showTree = true;
+                        Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees");
+                        continue;
+
+                    case "#clear":
+                        Console.Clear();
+                        continue;
                 }
 
                 SyntaxTree syntaxTree = SyntaxTree.Parse(line);

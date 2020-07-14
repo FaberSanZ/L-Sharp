@@ -44,6 +44,7 @@ namespace ZeckLyn
 
         BinaryExpression,
 
-        ParenthesizedExpression
+        ParenthesizedExpression,
+        LiteralExpression
     }
 }

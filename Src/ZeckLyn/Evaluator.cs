@@ -24,9 +24,9 @@ namespace ZeckLyn
 
         private int EvaluateExpression(ExpressionSyntax node)
         {
-            if (node is NumberExpressionSyntax)
+            if (node is LiteralExpressionSyntax n)
             {
-                return (int)((NumberExpressionSyntax)node).NumberToken.Value;
+                return (int)n.LiteralToken.Value;
             }
 
             if (node is BinaryExpressionSyntax b)
@@ -34,25 +34,22 @@ namespace ZeckLyn
                 int left = EvaluateExpression(b.Left);
                 int right = EvaluateExpression(b.Right);
 
-                if (b.OperatorToken.Kind == SyntaxKind.PlusToken)
+                switch (b.OperatorToken.Kind)
                 {
-                    return left + right;
-                }
-                else if (b.OperatorToken.Kind == SyntaxKind.MinusToken)
-                {
-                    return left - right;
-                }
-                else if (b.OperatorToken.Kind == SyntaxKind.StarToken)
-                {
-                    return left * right;
-                }
-                else if (b.OperatorToken.Kind == SyntaxKind.SlashToken)
-                {
-                    return left / right;
-                }
-                else
-                {
-                    throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}");
+                    case SyntaxKind.PlusToken:
+                        return left + right;
+
+                    case SyntaxKind.MinusToken:
+                        return left - right;
+
+                    case SyntaxKind.StarToken:
+                        return left * right;
+
+                    case SyntaxKind.SlashToken:
+                        return left / right;
+
+                    default:
+                        throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}");
                 }
             }
 
