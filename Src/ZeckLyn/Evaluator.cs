@@ -22,6 +22,8 @@ namespace ZeckLyn
             return EvaluateExpression(_root);
         }
 
+
+
         private int EvaluateExpression(ExpressionSyntax node)
         {
             if (node is LiteralExpressionSyntax n)

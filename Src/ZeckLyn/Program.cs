@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 
 namespace ZeckLyn
@@ -8,56 +9,38 @@ namespace ZeckLyn
         private static void Main(string[] args)
         {
             bool showTree = true;
+            string src = File.ReadAllText(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\..\Samples\Program.zk")));
+            Console.Write(">>> ");
+            Console.WriteLine(src);
 
-            for (; ; )
+            SyntaxTree syntaxTree = SyntaxTree.Parse(src);
+
+            if (showTree)
             {
-                Console.Write(">> ");
-                string line = Console.ReadLine();
-                if (string.IsNullOrWhiteSpace(line))
+                ConsoleColor color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                PrettyPrint(syntaxTree.Root);
+                Console.ForegroundColor = color;
+            }
+            Console.Write("output -> ");
+
+            if (!syntaxTree.Diagnostics.Any())
+            {
+                Evaluator e = new Evaluator(syntaxTree.Root);
+                int result = e.Evaluate();
+                Console.WriteLine(result);
+            }
+            else
+            {
+                ConsoleColor color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+
+                foreach (string diagnostic in syntaxTree.Diagnostics)
                 {
-                    return;
+                    Console.WriteLine(diagnostic);
                 }
 
-                switch (line)
-                {
-                    case "#showTree":
-                        showTree = true;
-                        Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees");
-                        continue;
-
-                    case "#clear":
-                        Console.Clear();
-                        continue;
-                }
-
-                SyntaxTree syntaxTree = SyntaxTree.Parse(line);
-
-                if (showTree)
-                {
-                    ConsoleColor color = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    PrettyPrint(syntaxTree.Root);
-                    Console.ForegroundColor = color;
-                }
-
-                if (!syntaxTree.Diagnostics.Any())
-                {
-                    Evaluator e = new Evaluator(syntaxTree.Root);
-                    int result = e.Evaluate();
-                    Console.WriteLine(result);
-                }
-                else
-                {
-                    ConsoleColor color = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-
-                    foreach (string diagnostic in syntaxTree.Diagnostics)
-                    {
-                        Console.WriteLine(diagnostic);
-                    }
-
-                    Console.ForegroundColor = color;
-                }
+                Console.ForegroundColor = color;
             }
 
 
