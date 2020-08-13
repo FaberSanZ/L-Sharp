@@ -1,9 +1,9 @@
 
 <h1 align="center">
-   ZeckLyn
+   ZeckTron
   <br>
   
-  ##  The .NET Compiler ("ZeckLyn")
+  ##  The .NET Compiler ("ZeckTron")
   
 </h1>
 
@@ -21,3 +21,34 @@ The code is licensed under MIT. Feel free to use it for whatever purpose.
 
 
 ## Examples
+
+```csharp
+
+using System;
+
+namespace ZeckTron
+{
+    internal class Program
+    {
+        public function Main(string[] args) -> void 
+        {
+            print(Test(args));              
+        }
+        
+        public function Test(string[] args) -> bool 
+        {
+            let n = "old"; // string
+            var i = "car"; // string            
+            i = 's'; // char is a unicode (int)         
+            i = 255; // new int
+            i = 3.1415; // new double
+            i = 3.1415f; // new float
+            
+            if (args.Length == 1)
+                return true;
+             
+            return false;
+        }
+    }
+}
+```
