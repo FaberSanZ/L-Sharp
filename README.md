@@ -24,7 +24,7 @@ The code is licensed under MIT. Feel free to use it for whatever purpose.
 
 ```csharp
 
-using System;
+import Core;
 
 namespace ZeckTron
 {
@@ -32,7 +32,7 @@ namespace ZeckTron
     {
         public function Main(string[] args) -> void 
         {
-            print(Test(args));              
+            Core.Print(Test(args));              
         }
         
         public function Test(string[] args) -> bool 
