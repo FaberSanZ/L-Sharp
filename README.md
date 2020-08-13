@@ -32,7 +32,7 @@ namespace ZeckTron
     {
         public function Main(string[] args) -> void 
         {
-            Core.Print(Test(args));              
+            Core.PrintLine(Test(args));              
         }
         
         public function Test(string[] args) -> bool 
