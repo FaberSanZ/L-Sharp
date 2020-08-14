@@ -30,12 +30,12 @@ namespace Sample
 {
     internal class Program
     {
-        public function Main(args: string[]) -> void 
+        public function Main(string[] args) -> void 
         {
             Core.PrintLine(Test(args));              
         }
         
-        public function Test(args: string[]) -> bool 
+        public function Test(string[] args) -> bool 
         {
             let n = "old"; // string
             var i = "car"; // string            
