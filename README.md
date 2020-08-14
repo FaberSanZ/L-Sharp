@@ -1,9 +1,9 @@
 
 <h1 align="center">
-   ZeckTron
+   Z#
   <br>
   
-  ##  The .NET Compiler ("ZeckTron")
+  ##  The .NET Compiler ("Z-Sharp")
   
 </h1>
 
@@ -12,7 +12,7 @@
 
 <br>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Zeckoxe/ZeckLyn/blob/master/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Zeckoxe/Z-Sharp/blob/master/LICENSE)
 
 The code is licensed under MIT. Feel free to use it for whatever purpose.
 
@@ -26,16 +26,16 @@ The code is licensed under MIT. Feel free to use it for whatever purpose.
 
 import Core;
 
-namespace ZeckTron
+namespace Sample
 {
     internal class Program
     {
-        public function Main(string[] args) -> void 
+        public function Main(args: string[]) -> void 
         {
             Core.PrintLine(Test(args));              
         }
         
-        public function Test(string[] args) -> bool 
+        public function Test(args: string[]) -> bool 
         {
             let n = "old"; // string
             var i = "car"; // string            
