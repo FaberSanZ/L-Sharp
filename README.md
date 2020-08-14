@@ -3,7 +3,7 @@
    Z#
   <br>
   
-  ##  The Compiler ("Z-Sharp")
+  ##  The .NET Compiler ("Z-Sharp")
   
 </h1>
 
