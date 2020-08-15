@@ -1,9 +1,9 @@
 
 <h1 align="center">
-   Z#
+   L#
   <br>
   
-  ##  The .NET Compiler ("Z-Sharp")
+  ##  The .NET Compiler ("L-Sharp")
   
 </h1>
 
