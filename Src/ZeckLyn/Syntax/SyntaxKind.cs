@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZeckLyn
+namespace LSharp
 {
     public enum SyntaxKind
     {

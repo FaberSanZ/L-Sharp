@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZeckLyn
+namespace LSharp
 {
     public sealed class LiteralExpressionSyntax : ExpressionSyntax
     {

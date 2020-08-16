@@ -4,7 +4,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Linq;
 
-namespace ZeckLyn
+namespace LSharp
 {
     public sealed partial class NumberExpressionSyntax : ExpressionSyntax
     {

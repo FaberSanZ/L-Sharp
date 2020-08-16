@@ -7,7 +7,7 @@
 
 using System.Collections.Generic;
 
-namespace ZeckLyn
+namespace LSharp
 {
     public class Parser
     {

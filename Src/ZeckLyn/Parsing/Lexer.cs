@@ -4,7 +4,7 @@
 	Lexer.cs
 =============================================================================*/
 
-namespace ZeckLyn
+namespace LSharp
 {
 
     public class Lexer
@@ -36,7 +36,7 @@ namespace ZeckLyn
             {
                 int start = _position;
 
-                while (char.IsDigit(Current))
+                while (IsDigit(Current))
                 {
                     Next();
                 }
@@ -108,6 +108,19 @@ namespace ZeckLyn
         }
 
 
+        internal bool IsAlpha(char c)
+        {
+            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
+        }
 
+        internal bool IsDigit(char c)
+        {
+            return c >= '0' && c <= '9';
+        }
+
+        internal bool IsAlphaNumeric(char c)
+        {
+            return IsAlpha(c) || IsDigit(c);
+        }
     }
 }

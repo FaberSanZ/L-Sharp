@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace ZeckLyn
+namespace LSharp
 {
     internal class Program
     {

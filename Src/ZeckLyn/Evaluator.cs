@@ -6,7 +6,7 @@
 
 using System;
 
-namespace ZeckLyn
+namespace LSharp
 {
     public class Evaluator
     {

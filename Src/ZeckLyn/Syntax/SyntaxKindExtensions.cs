@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace ZeckLyn
+namespace LSharp
 {
     internal static class SyntaxKindExtensions
     {

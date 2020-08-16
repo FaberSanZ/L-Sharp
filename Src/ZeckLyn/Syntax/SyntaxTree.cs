@@ -8,7 +8,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ZeckLyn
+namespace LSharp
 {
     public sealed class SyntaxTree
     {

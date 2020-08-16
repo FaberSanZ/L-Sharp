@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZeckLyn
+namespace LSharp
 {
 
     [AttributeUsage(AttributeTargets.Field)]
