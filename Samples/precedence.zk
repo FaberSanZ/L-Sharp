@@ -1,8 +1,8 @@
 // * has higher precedence than +.
-print 2 + 3 * 4; // expect: 14
+print(2 + 3 * 4); // expect: 14
 
 // * has higher precedence than -.
-print 20 - 3 * 4; // expect: 8
+print (20 - 3 * 4); // expect: 8
 
 // / has higher precedence than +.
 print 2 + 6 / 3; // expect: 4

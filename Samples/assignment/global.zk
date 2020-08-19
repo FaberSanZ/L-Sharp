@@ -1,8 +1,9 @@
-var a = "before";
-print a; // expect: before
+function Main() -> void
+{
+    let a = "before"; // string
+    print(a); // before
 
-a = "after";
-print a; // expect: after
+    a = "after";
+    print(a); // after
 
-print a = "arg"; // expect: arg
-print a; // expect: arg
+}

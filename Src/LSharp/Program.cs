@@ -10,6 +10,8 @@ namespace LSharp
         {
             bool showTree = true;
             string src = File.ReadAllText(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\..\Samples\Program.zk")));
+            src += "/ 1000";
+            
             Console.Write(">>> ");
             Console.WriteLine(src);
 
@@ -63,7 +65,7 @@ namespace LSharp
 
             Console.WriteLine();
 
-            indent += isLast ? "    " : "│   ";
+            indent += isLast ? "   " : "│  ";
 
             SyntaxNode lastChild = node.GetChildren().LastOrDefault();
 

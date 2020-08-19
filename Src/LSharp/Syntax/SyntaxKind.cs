@@ -3,8 +3,6 @@
 /*=============================================================================
 	SyntaxKind.cs
 =============================================================================*/
-
-
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -40,11 +38,12 @@ namespace LSharp
 
         EndOfFileToken,
 
-        NumberExpression,
-
         BinaryExpression,
 
         ParenthesizedExpression,
-        LiteralExpression
+
+        LiteralExpression,
+
+        NumberExpression,
     }
 }

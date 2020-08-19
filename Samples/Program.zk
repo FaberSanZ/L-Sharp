@@ -1,1 +1,13 @@
-10 + 5 - 7 * 8 
+import Core;
+
+//faber 
+namespace Sample
+{
+    internal class Program
+    {
+        public function Main(string[] args) -> void 
+        {
+            Core.Print("Hello World!");
+        }
+    }
+}

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LSharp", "ZeckLyn\LSharp.csproj", "{36FEC94F-B674-4D23-A586-4D7D3D29B442}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LSharp", "LSharp\LSharp.csproj", "{A267EF81-8B2A-4E81-BCC5-14A5383C8F84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{36FEC94F-B674-4D23-A586-4D7D3D29B442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36FEC94F-B674-4D23-A586-4D7D3D29B442}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36FEC94F-B674-4D23-A586-4D7D3D29B442}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36FEC94F-B674-4D23-A586-4D7D3D29B442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A267EF81-8B2A-4E81-BCC5-14A5383C8F84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A267EF81-8B2A-4E81-BCC5-14A5383C8F84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A267EF81-8B2A-4E81-BCC5-14A5383C8F84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A267EF81-8B2A-4E81-BCC5-14A5383C8F84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
