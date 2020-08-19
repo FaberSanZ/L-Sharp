@@ -1,13 +1,12 @@
 import Core;
+import Console;
 
-//faber 
-namespace Sample
+namespace Sample:
+
+internal class Program
 {
-    internal class Program
+    public function Main(args: string[]) -> void 
     {
-        public function Main(string[] args) -> void 
-        {
-            Core.Print("Hello World!");
-        }
+        Console.Print("Hello World!");
     }
 }
