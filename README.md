@@ -8,7 +8,7 @@
 </h1>
 
 
-![Sample](https://github.com/FaberSanZ/L-Sharp/blob/master/Captura.PNG)
+![Sample](https://github.com/FaberSanZ/L-Sharp/blob/master/IMG/sample.PNG)
 <hr>
 
 
