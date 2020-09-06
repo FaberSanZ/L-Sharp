@@ -39,6 +39,5 @@ function Write(str)
 }
 
 
-let str = Write("Test Test Test Test Test");
-print str;
+Write("Test Test Test Test Test");
 ```
