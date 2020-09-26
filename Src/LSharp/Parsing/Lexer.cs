@@ -32,7 +32,7 @@ namespace LSharp
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, "\0", null);
             }
 
-            if (char.IsDigit(Current))
+            if (IsDigit(Current))
             {
                 int start = _position;
 
@@ -57,8 +57,8 @@ namespace LSharp
 
                 int length = _position - start;
                 string text = _text.Substring(start, length);
-                //int.TryParse(text, out var value);
-                return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
+                int.TryParse(text, out int value);
+                return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, value);
             }
 
 

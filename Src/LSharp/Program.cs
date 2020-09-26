@@ -9,9 +9,8 @@ namespace LSharp
         private static void Main(string[] args)
         {
             bool showTree = true;
-            string src = File.ReadAllText(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\..\Samples\Program.zk")));
-            src += "/ 1000";
-            
+            string src = File.ReadAllText(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\..\Samples\Test.zk")));
+
             Console.Write(">>> ");
             Console.WriteLine(src);
 
