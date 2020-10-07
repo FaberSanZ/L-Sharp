@@ -1,22 +1,227 @@
-﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
-// Copyright (c) 2008 - 2015 Jb Evain. https://github.com/jbevain/cecil
+// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
 /*===================================================================================
 	OpCodeNames.cs
 ====================================================================================*/
 
+using System;
 
 namespace LSharp.IL.Cil
 {
-    internal static class OpCodeNames 
+
+    public enum FlowControl
+    {
+        Branch,
+        Break,
+        Call,
+        Cond_Branch,
+        Meta,
+        Next,
+        Phi,
+        Return,
+        Throw,
+    }
+
+    public enum OpCodeType
+    {
+        Annotation,
+        Macro,
+        Nternal,
+        Objmodel,
+        Prefix,
+        Primitive,
+    }
+
+    public enum OperandType
+    {
+        InlineBrTarget,
+        InlineField,
+        InlineI,
+        InlineI8,
+        InlineMethod,
+        InlineNone,
+        InlinePhi,
+        InlineR,
+        InlineSig,
+        InlineString,
+        InlineSwitch,
+        InlineTok,
+        InlineType,
+        InlineVar,
+        InlineArg,
+        ShortInlineBrTarget,
+        ShortInlineI,
+        ShortInlineR,
+        ShortInlineVar,
+        ShortInlineArg,
+    }
+
+    public enum StackBehaviour
+    {
+        Pop0,
+        Pop1,
+        Pop1_pop1,
+        Popi,
+        Popi_pop1,
+        Popi_popi,
+        Popi_popi8,
+        Popi_popi_popi,
+        Popi_popr4,
+        Popi_popr8,
+        Popref,
+        Popref_pop1,
+        Popref_popi,
+        Popref_popi_popi,
+        Popref_popi_popi8,
+        Popref_popi_popr4,
+        Popref_popi_popr8,
+        Popref_popi_popref,
+        PopAll,
+        Push0,
+        Push1,
+        Push1_push1,
+        Pushi,
+        Pushi8,
+        Pushr4,
+        Pushr8,
+        Pushref,
+        Varpop,
+        Varpush,
+    }
+
+    public struct OpCode : IEquatable<OpCode>
+    {
+        private readonly byte op1;
+        private readonly byte op2;
+        private readonly byte code;
+        private readonly byte flow_control;
+        private readonly byte opcode_type;
+        private readonly byte operand_type;
+        private readonly byte stack_behavior_pop;
+        private readonly byte stack_behavior_push;
+
+        public string Name
+        {
+            get { return OpCodeNames.names[(int)Code]; }
+        }
+
+        public int Size
+        {
+            get { return op1 == 0xff ? 1 : 2; }
+        }
+
+        public byte Op1
+        {
+            get { return op1; }
+        }
+
+        public byte Op2
+        {
+            get { return op2; }
+        }
+
+        public short Value
+        {
+            get { return op1 == 0xff ? op2 : (short)((op1 << 8) | op2); }
+        }
+
+        public Code Code
+        {
+            get { return (Code)code; }
+        }
+
+        public FlowControl FlowControl
+        {
+            get { return (FlowControl)flow_control; }
+        }
+
+        public OpCodeType OpCodeType
+        {
+            get { return (OpCodeType)opcode_type; }
+        }
+
+        public OperandType OperandType
+        {
+            get { return (OperandType)operand_type; }
+        }
+
+        public StackBehaviour StackBehaviourPop
+        {
+            get { return (StackBehaviour)stack_behavior_pop; }
+        }
+
+        public StackBehaviour StackBehaviourPush
+        {
+            get { return (StackBehaviour)stack_behavior_push; }
+        }
+
+        internal OpCode(int x, int y)
+        {
+            this.op1 = (byte)((x >> 0) & 0xff);
+            this.op2 = (byte)((x >> 8) & 0xff);
+            this.code = (byte)((x >> 16) & 0xff);
+            this.flow_control = (byte)((x >> 24) & 0xff);
+
+            this.opcode_type = (byte)((y >> 0) & 0xff);
+            this.operand_type = (byte)((y >> 8) & 0xff);
+            this.stack_behavior_pop = (byte)((y >> 16) & 0xff);
+            this.stack_behavior_push = (byte)((y >> 24) & 0xff);
+
+            if (op1 == 0xff)
+            {
+                OpCodes.OneByteOpCode[op2] = this;
+            }
+            else
+            {
+                OpCodes.TwoBytesOpCode[op2] = this;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is OpCode))
+            {
+                return false;
+            }
+
+            OpCode opcode = (OpCode)obj;
+            return op1 == opcode.op1 && op2 == opcode.op2;
+        }
+
+        public bool Equals(OpCode opcode)
+        {
+            return op1 == opcode.op1 && op2 == opcode.op2;
+        }
+
+        public static bool operator ==(OpCode one, OpCode other)
+        {
+            return one.op1 == other.op1 && one.op2 == other.op2;
+        }
+
+        public static bool operator !=(OpCode one, OpCode other)
+        {
+            return one.op1 != other.op1 || one.op2 != other.op2;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+
+    internal static class OpCodeNames
     {
 
         internal static readonly string[] names;
 
         static OpCodeNames()
         {
-            byte[] table = new byte[]
-            {
+            byte[] table = new byte[] {
                 3, 110, 111, 112,
                 5, 98, 114, 101, 97, 107,
                 7, 108, 100, 97, 114, 103, 46, 48,

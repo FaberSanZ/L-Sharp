@@ -7,4 +7,8 @@
     <AssemblyName>LSharp</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LSharp.IL\LSharp.IL.csproj" />
+  </ItemGroup>
+
 </Project>

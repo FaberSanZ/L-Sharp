@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using LSharp.IL;
+
 
 namespace LSharp
 {
@@ -44,9 +46,34 @@ namespace LSharp
                 Console.ForegroundColor = color;
             }
 
-
+            TestExe();
 
         }
+
+        private static void TestExe()
+        {
+            string outputPath = Path.ChangeExtension(@"..\..\..\..\..\Samples\Test", ".exe");
+
+            string moduleName = Path.GetFileNameWithoutExtension(outputPath);
+            AssemblyNameDefinition assemblyName = new AssemblyNameDefinition(moduleName, new Version(1, 0));
+
+
+            AssemblyDefinition _assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, moduleName, ModuleKind.Console);
+
+            TypeDefinition typeDefinition = new TypeDefinition("", "Program", TypeAttributes.Abstract | TypeAttributes.Sealed);
+
+
+            TypeReference tr = _assemblyDefinition.MainModule.ImportReference(typeof(void));
+
+            MethodDefinition methodDefinition = new MethodDefinition("Main", MethodAttributes.Public, tr);
+            typeDefinition.Methods.Add(methodDefinition);
+
+
+            _assemblyDefinition.MainModule.Types.Add(typeDefinition);
+
+            _assemblyDefinition.Save(outputPath);
+        }
+
 
         private static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
         {
@@ -74,6 +101,8 @@ namespace LSharp
             }
         }
 
+
+        
     }
 }
 
