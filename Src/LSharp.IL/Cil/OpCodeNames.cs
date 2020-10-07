@@ -1,6 +1,5 @@
 ﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 // Copyright (c) 2008 - 2015 Jb Evain. https://github.com/jbevain/cecil
-// Copyright (c) 2008 - 2011 Novell, Inc.
 
 /*===================================================================================
 	OpCodeNames.cs
@@ -9,7 +8,7 @@
 
 namespace LSharp.IL.Cil
 {
-    internal static class OpCodeNames
+    internal static class OpCodeNames 
     {
 
         internal static readonly string[] names;

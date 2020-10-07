@@ -66,7 +66,7 @@ namespace LSharp
                 return NextToken();
             }
 
-            _diagnostics.Add($"ERROR: Unexpected token <{Current.Kind}>, expected <{kind}>");
+            _diagnostics.Add($"<r>ERROR</r>: Unexpected token <{Current.Kind}>, expected <{kind}>");
             return new SyntaxToken(kind, Current.Position, null, null);
         }
 
