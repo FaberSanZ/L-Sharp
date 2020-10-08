@@ -1,10 +1,12 @@
-﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
-/*=============================================================================
+/*===================================================================================
 	Lexer.cs
-=============================================================================*/
+====================================================================================*/
 
-namespace LSharp
+using LSharp.Compiler.Syntax;
+
+namespace LSharp.Compiler.Parsing
 {
 
     public class Lexer

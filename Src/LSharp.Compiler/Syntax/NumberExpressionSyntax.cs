@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Linq;
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
-namespace LSharp
+/*===================================================================================
+	NumberExpressionSyntax.cs
+====================================================================================*/
+
+
+using System.Collections.Generic;
+
+namespace LSharp.Compiler.Syntax
 {
     public sealed partial class NumberExpressionSyntax : ExpressionSyntax
     {

@@ -1,8 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
-namespace LSharp
+/*===================================================================================
+	ParenthesizedExpressionSyntax.cs
+====================================================================================*/
+
+
+using System.Collections.Generic;
+
+namespace LSharp.Compiler.Syntax
 {
     public sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
     {

@@ -1,8 +1,8 @@
-﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
-/*=============================================================================
-	Evaluator.cs
-=============================================================================*/
+/*===================================================================================
+	LiteralExpressionSyntax.cs
+====================================================================================*/
 
 
 
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LSharp
+namespace LSharp.Compiler.Syntax
 {
     public sealed class LiteralExpressionSyntax : ExpressionSyntax
     {

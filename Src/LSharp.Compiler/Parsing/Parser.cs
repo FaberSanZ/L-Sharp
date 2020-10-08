@@ -1,13 +1,14 @@
-﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
-/*=============================================================================
+/*===================================================================================
 	Parser.cs
-=============================================================================*/
+====================================================================================*/
 
 
+using LSharp.Compiler.Syntax;
 using System.Collections.Generic;
 
-namespace LSharp
+namespace LSharp.Compiler.Parsing
 {
     public class Parser
     {

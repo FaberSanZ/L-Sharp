@@ -1,8 +1,8 @@
-﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
-/*=============================================================================
+/*===================================================================================
 	SyntaxKindExtensions.cs
-=============================================================================*/
+====================================================================================*/
 
 
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace LSharp
+namespace LSharp.Compiler.Syntax
 {
     internal static class SyntaxKindExtensions
     {
@@ -19,15 +19,15 @@ namespace LSharp
 
         static SyntaxKindExtensions()
         {
-            Type t = typeof(SyntaxKind);
 
-            IEnumerable<FieldInfo> members = t.GetTypeInfo().DeclaredFields.Where(field => field.IsPublic && field.IsStatic);
+            IEnumerable<FieldInfo> fields = typeof(SyntaxKind).GetTypeInfo().DeclaredFields.Where(field => field.IsPublic && field.IsStatic);
 
 
-            foreach (FieldInfo field in members)
+            foreach (FieldInfo field in fields)
             {
                 TokenTextAttribute tokenText = field.GetCustomAttribute<TokenTextAttribute>();
-                if (tokenText != null)
+
+                if (tokenText is not null)
                 {
                     SyntaxKind type = (SyntaxKind)field.GetValue(default);
                     TokenTexts.Add(type, tokenText.Text);

@@ -1,14 +1,15 @@
-﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
-/*=============================================================================
+/*===================================================================================
 	SyntaxTree.cs
-=============================================================================*/
+====================================================================================*/
 
 
+using LSharp.Compiler.Parsing;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LSharp
+namespace LSharp.Compiler.Syntax
 {
     public sealed class SyntaxTree
     {

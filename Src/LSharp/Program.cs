@@ -1,7 +1,18 @@
-﻿using System;
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
+
+/*===================================================================================
+	LSharp - > Program.cs
+====================================================================================*/
+
+
+using System;
 using System.IO;
 using System.Linq;
+
 using LSharp.IL;
+using LSharp.Compiler;
+using LSharp.Compiler.Syntax;
+using LSharp.Compiler.Parsing;
 
 
 namespace LSharp

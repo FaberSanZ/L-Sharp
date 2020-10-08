@@ -1,8 +1,8 @@
-﻿// Copyright (c) 2020 Faber Leonardo. All Rights Reserved.
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
-/*=============================================================================
+/*===================================================================================
 	SyntaxToken.cs
-=============================================================================*/
+====================================================================================*/
 
 
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LSharp
+namespace LSharp.Compiler.Syntax
 {
     public class SyntaxToken : SyntaxNode
     {

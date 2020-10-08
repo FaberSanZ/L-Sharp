@@ -1,8 +1,15 @@
-﻿using System;
+﻿// Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
+
+/*===================================================================================
+	BinaryExpressionSyntax.cs
+====================================================================================*/
+
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LSharp
+namespace LSharp.Compiler.Syntax
 {
     public class BinaryExpressionSyntax : ExpressionSyntax
     {
