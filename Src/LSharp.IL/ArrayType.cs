@@ -1,143 +1,131 @@
 // Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
 
 /*===================================================================================
-	ArrayDimension.cs
+	ArrayType.cs
 ====================================================================================*/
 
+using LSharp.IL.Collections.Generic;
 using System;
 using System.Text;
 using System.Threading;
-using LSharp.IL;
-using LSharp.IL.Collections.Generic;
 using MD = LSharp.IL.Metadata;
 
 namespace LSharp.IL
 {
+    public sealed class ArrayType : TypeSpecification
+    {
+        private Collection<ArrayDimension> dimensions;
 
-	public struct ArrayDimension {
 
-		int? lower_bound;
-		int? upper_bound;
+        public ArrayType(TypeReference type) : base(type)
+        {
+            Mixin.CheckType(type);
+            etype = MD.ElementType.Array;
+        }
 
-		public int? LowerBound {
-			get { return lower_bound; }
-			set { lower_bound = value; }
-		}
+        public ArrayType(TypeReference type, int rank) : this(type)
+        {
+            Mixin.CheckType(type);
 
-		public int? UpperBound {
-			get { return upper_bound; }
-			set { upper_bound = value; }
-		}
+            if (rank is 1)
+            {
+                return;
+            }
 
-		public bool IsSized {
-			get { return lower_bound.HasValue || upper_bound.HasValue; }
-		}
+            dimensions = new Collection<ArrayDimension>(rank);
 
-		public ArrayDimension (int? lowerBound, int? upperBound)
-		{
-			this.lower_bound = lowerBound;
-			this.upper_bound = upperBound;
-		}
+            for (int i = 0; i < rank; i++)
+            {
+                dimensions.Add(new ArrayDimension());
+            }
 
-		public override string ToString ()
-		{
-			return !IsSized
-				? string.Empty
-				: lower_bound + "..." + upper_bound;
-		}
-	}
+            etype = MD.ElementType.Array;
+        }
 
-	public sealed class ArrayType : TypeSpecification {
+        public Collection<ArrayDimension> Dimensions
+        {
+            get
+            {
+                if (dimensions is not null)
+                {
+                    return dimensions;
+                }
 
-		Collection<ArrayDimension> dimensions;
+                Collection<ArrayDimension> empty_dimensions = new Collection<ArrayDimension>
+                {
+                    new ArrayDimension()
+                };
 
-		public Collection<ArrayDimension> Dimensions {
-			get {
-				if (dimensions != null)
-					return dimensions;
+                Interlocked.CompareExchange(ref dimensions, empty_dimensions, null);
 
-				var empty_dimensions = new Collection<ArrayDimension> ();
-				empty_dimensions.Add (new ArrayDimension ());
+                return dimensions;
+            }
+        }        
 
-				Interlocked.CompareExchange (ref dimensions, empty_dimensions, null);
+        public override string Name => base.Name + Suffix;
 
-				return dimensions;
-			}
-		}
+        public int Rank => dimensions is null ? 1 : dimensions.Count;
 
-		public int Rank {
-			get { return dimensions == null ? 1 : dimensions.Count; }
-		}
+        public override string FullName => base.FullName + Suffix;
 
-		public bool IsVector {
-			get {
-				if (dimensions == null)
-					return true;
+        public override bool IsArray => true;
 
-				if (dimensions.Count > 1)
-					return false;
 
-				var dimension = dimensions [0];
+        public override bool IsValueType
+        {
+            get => false;
+            set => throw new InvalidOperationException();
+        }
 
-				return !dimension.IsSized;
-			}
-		}
 
-		public override bool IsValueType {
-			get { return false; }
-			set { throw new InvalidOperationException (); }
-		}
+        public bool IsVector
+        {
+            get
+            {
+                if (dimensions is null)
+                {
+                    return true;
+                }
 
-		public override string Name {
-			get { return base.Name + Suffix; }
-		}
+                if (dimensions.Count > 1)
+                {
+                    return false;
+                }
 
-		public override string FullName {
-			get { return base.FullName + Suffix; }
-		}
+                ArrayDimension dimension = dimensions[0];
 
-		string Suffix {
-			get {
-				if (IsVector)
-					return "[]";
+                return !dimension.IsSized;
+            }
+        }
 
-				var suffix = new StringBuilder ();
-				suffix.Append ("[");
-				for (int i = 0; i < dimensions.Count; i++) {
-					if (i > 0)
-						suffix.Append (",");
+        private string Suffix
+        {
+            get
+            {
+                if (IsVector)
+                {
+                    return "[]";
+                }
 
-					suffix.Append (dimensions [i].ToString ());
-				}
-				suffix.Append ("]");
+                StringBuilder suffix = new StringBuilder();
+                suffix.Append("[");
+                for (int i = 0; i < dimensions.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        suffix.Append(",");
+                    }
 
-				return suffix.ToString ();
-			}
-		}
+                    suffix.Append(dimensions[i].ToString());
+                }
+                suffix.Append("]");
 
-		public override bool IsArray {
-			get { return true; }
-		}
+                return suffix.ToString();
+            }
+        }
 
-		public ArrayType (TypeReference type)
-			: base (type)
-		{
-			Mixin.CheckType (type);
-			this.etype = MD.ElementType.Array;
-		}
 
-		public ArrayType (TypeReference type, int rank)
-			: this (type)
-		{
-			Mixin.CheckType (type);
+        
 
-			if (rank == 1)
-				return;
-
-			dimensions = new Collection<ArrayDimension> (rank);
-			for (int i = 0; i < rank; i++)
-				dimensions.Add (new ArrayDimension ());
-			this.etype = MD.ElementType.Array;
-		}
-	}
+    }
 }
