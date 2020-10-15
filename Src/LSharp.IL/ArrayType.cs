@@ -6,6 +6,7 @@
 
 using LSharp.IL.Collections.Generic;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using MD = LSharp.IL.Metadata;
@@ -51,7 +52,7 @@ namespace LSharp.IL
                     return dimensions;
                 }
 
-                Collection<ArrayDimension> empty_dimensions = new Collection<ArrayDimension>
+                Collection<ArrayDimension> empty_dimensions = new()
                 {
                     new ArrayDimension()
                 };
@@ -92,7 +93,7 @@ namespace LSharp.IL
                     return false;
                 }
 
-                ArrayDimension dimension = dimensions[0];
+                ArrayDimension dimension = dimensions.First();
 
                 return !dimension.IsSized;
             }

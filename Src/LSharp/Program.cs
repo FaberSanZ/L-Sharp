@@ -22,7 +22,19 @@ namespace LSharp
         private static void Main(string[] args)
         {
             bool showTree = true;
-            string src = File.ReadAllText(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\..\Samples\Test.zk")));
+            string src = "";
+
+
+            if (args.Any())
+            {
+                src += File.ReadAllText(args.FirstOrDefault());
+            }
+            else
+            {
+                src += File.ReadAllText(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\..\..\..\..\Samples\Test.zk")));
+            }
+
+
 
             Console.Write(">>> ");
             Console.WriteLine(src);

@@ -14,35 +14,38 @@ namespace LSharp.IL
 
     public sealed class AssemblyDefinition : ICustomAttributeProvider, ISecurityDeclarationProvider, IDisposable
     {
-        private AssemblyNameDefinition name;
 
         internal ModuleDefinition main_module;
+
+        private AssemblyNameDefinition name;
         private Collection<ModuleDefinition> modules;
         private Collection<CustomAttribute> custom_attributes;
         private Collection<SecurityDeclaration> security_declarations;
 
-        public AssemblyNameDefinition Name
+        public AssemblyDefinition()
         {
-            get { return name; }
-            set { name = value; }
         }
 
-        public string FullName
+
+        public AssemblyNameDefinition Name
         {
-            get { return name != null ? name.FullName : string.Empty; }
+            get => name;
+            set => name = value;
         }
+
+        public string FullName => name is not null ? name.FullName : string.Empty;
+
 
         public MetadataToken MetadataToken
         {
-            get { return new MetadataToken(TokenType.Assembly, 1); }
+            get => new MetadataToken(TokenType.Assembly, 1); 
             set { }
         }
-
         public Collection<ModuleDefinition> Modules
         {
             get
             {
-                if (modules != null)
+                if (modules is not null)
                 {
                     return modules;
                 }
@@ -57,22 +60,20 @@ namespace LSharp.IL
             }
         }
 
-        public ModuleDefinition MainModule
-        {
-            get { return main_module; }
-        }
+        public ModuleDefinition MainModule => main_module;
+
 
         public MethodDefinition EntryPoint
         {
-            get { return main_module.EntryPoint; }
-            set { main_module.EntryPoint = value; }
+            get => main_module.EntryPoint;
+            set => main_module.EntryPoint = value;
         }
 
         public bool HasCustomAttributes
         {
             get
             {
-                if (custom_attributes != null)
+                if (custom_attributes is not null)
                 {
                     return custom_attributes.Count > 0;
                 }
@@ -81,16 +82,14 @@ namespace LSharp.IL
             }
         }
 
-        public Collection<CustomAttribute> CustomAttributes
-        {
-            get { return custom_attributes ?? (this.GetCustomAttributes(ref custom_attributes, main_module)); }
-        }
+        public Collection<CustomAttribute> CustomAttributes => custom_attributes ?? (this.GetCustomAttributes(ref custom_attributes, main_module));
+
 
         public bool HasSecurityDeclarations
         {
             get
             {
-                if (security_declarations != null)
+                if (security_declarations is not null)
                 {
                     return security_declarations.Count > 0;
                 }
@@ -99,24 +98,19 @@ namespace LSharp.IL
             }
         }
 
-        public Collection<SecurityDeclaration> SecurityDeclarations
-        {
-            get { return security_declarations ?? (this.GetSecurityDeclarations(ref security_declarations, main_module)); }
-        }
+        public Collection<SecurityDeclaration> SecurityDeclarations => security_declarations ?? (this.GetSecurityDeclarations(ref security_declarations, main_module));
 
-        internal AssemblyDefinition()
-        {
-        }
 
         public void Dispose()
         {
-            if (this.modules == null)
+            if (this.modules is null)
             {
                 main_module.Dispose();
                 return;
             }
 
-            Collection<ModuleDefinition> modules = this.Modules;
+            Collection<ModuleDefinition> modules = Modules;
+
             for (int i = 0; i < modules.Count; i++)
             {
                 modules[i].Dispose();
@@ -129,18 +123,19 @@ namespace LSharp.IL
 
         public static AssemblyDefinition CreateAssembly(AssemblyNameDefinition assemblyName, string moduleName, ModuleParameters parameters)
         {
-            if (assemblyName == null)
+            if (assemblyName is null)
             {
                 throw new ArgumentNullException("assemblyName");
             }
 
-            if (moduleName == null)
+            if (moduleName is null)
             {
                 throw new ArgumentNullException("moduleName");
             }
 
             Mixin.CheckParameters(parameters);
-            if (parameters.Kind == ModuleKind.NetModule)
+
+            if (parameters.Kind is ModuleKind.NetModule)
             {
                 throw new ArgumentException("kind");
             }
@@ -174,15 +169,18 @@ namespace LSharp.IL
         private static AssemblyDefinition ReadAssembly(ModuleDefinition module)
         {
             AssemblyDefinition assembly = module.Assembly;
-            if (assembly == null)
+
+            if (assembly is null)
             {
                 throw new ArgumentException();
             }
 
             return assembly;
         }
-        
-        public void SaveAndRun()
+
+
+        //TODO: SaveAndRun
+        public void SaveAndRun(string fileName)
         {
 
         }
@@ -219,7 +217,7 @@ namespace LSharp.IL
 
         public override string ToString()
         {
-            return this.FullName;
+            return string.Format($"FullName: {FullName}");
         }
     }
 }
