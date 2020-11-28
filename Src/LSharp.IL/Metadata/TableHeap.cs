@@ -6,7 +6,7 @@
 
 namespace LSharp.IL.Metadata
 {
-    internal enum Table : byte
+    public enum Table : byte
     {
         Module = 0x00,
         TypeRef = 0x01,
@@ -64,7 +64,7 @@ namespace LSharp.IL.Metadata
         CustomDebugInformation = 0x37,
     }
 
-    internal struct TableInformation
+    public struct TableInformation
     {
         public uint Offset;
         public uint Length;
@@ -76,7 +76,7 @@ namespace LSharp.IL.Metadata
         }
     }
 
-    internal sealed class TableHeap : Heap
+    public sealed class TableHeap : Heap
     {
 
         public long Valid;

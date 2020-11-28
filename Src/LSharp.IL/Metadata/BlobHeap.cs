@@ -8,7 +8,7 @@ using System;
 
 namespace LSharp.IL.Metadata
 {
-    internal sealed class BlobHeap : Heap
+    public sealed class BlobHeap : Heap
     {
 
         public BlobHeap(byte[] data)

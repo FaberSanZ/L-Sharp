@@ -547,7 +547,7 @@ namespace LSharp.IL
 		}
 	}
 
-	class InterfaceImplementationCollection : Collection<InterfaceImplementation>
+	public class InterfaceImplementationCollection : Collection<InterfaceImplementation>
 	{
 		readonly TypeDefinition type;
 
@@ -583,7 +583,7 @@ namespace LSharp.IL
 		}
 	}
 
-	static partial class Mixin {
+	public static partial class Mixin {
 
 		public static TypeReference GetEnumUnderlyingType (this TypeDefinition self)
 		{

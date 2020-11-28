@@ -6,7 +6,7 @@
 
 namespace LSharp.IL.Metadata
 {
-    internal abstract class Heap
+    public abstract class Heap
     {
 
         public int IndexSize;

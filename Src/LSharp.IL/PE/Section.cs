@@ -6,13 +6,13 @@
 
 using System;
 
-using RVA = System.UInt32;
 
 namespace LSharp.IL.PE {
 
-	sealed class Section {
+	public sealed class Section 
+	{
 		public string Name;
-		public RVA VirtualAddress;
+		public uint VirtualAddress;
 		public uint VirtualSize;
 		public uint SizeOfRawData;
 		public uint PointerToRawData;

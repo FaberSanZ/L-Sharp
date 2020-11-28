@@ -10,7 +10,7 @@ using System;
 
 namespace LSharp.IL
 {
-    internal static class Disposable
+    public static class Disposable
     {
 
         public static Disposable<T> Owned<T>(T value) where T : class, IDisposable
@@ -24,7 +24,7 @@ namespace LSharp.IL
         }
     }
 
-    internal struct Disposable<T> : IDisposable where T : class, IDisposable
+    public struct Disposable<T> : IDisposable where T : class, IDisposable
     {
 
         internal readonly T value;

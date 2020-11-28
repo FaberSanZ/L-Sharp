@@ -14,7 +14,7 @@ namespace LSharp.IL
 
     using Slot = Row<string, string>;
 
-    internal sealed class TypeDefinitionCollection : Collection<TypeDefinition>
+    public sealed class TypeDefinitionCollection : Collection<TypeDefinition>
     {
         private readonly ModuleDefinition container;
         private readonly Dictionary<Slot, TypeDefinition> name_cache;

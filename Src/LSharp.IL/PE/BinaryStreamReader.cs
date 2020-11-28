@@ -8,7 +8,7 @@ using System.IO;
 
 namespace LSharp.IL.PE
 {
-    internal class BinaryStreamReader : BinaryReader
+    public class BinaryStreamReader : BinaryReader
     {
 
         public int Position

@@ -8,7 +8,7 @@ using System;
 
 namespace LSharp.IL.Metadata {
 
-	sealed class GuidHeap : Heap {
+	public sealed class GuidHeap : Heap {
 
 		public GuidHeap (byte [] data)
 			: base (data)

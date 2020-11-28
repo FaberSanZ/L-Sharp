@@ -798,7 +798,7 @@ namespace LSharp.IL
 		}
 	}
 
-	sealed class MetadataBuilder {
+	public sealed class MetadataBuilder {
 
 		readonly internal ModuleDefinition module;
 		readonly internal ISymbolWriterProvider symbol_writer_provider;

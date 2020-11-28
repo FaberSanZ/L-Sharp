@@ -4,163 +4,177 @@
 	Image.cs
 ====================================================================================*/
 
-using System;
-using System.IO;
-
 using LSharp.IL.Cil;
 using LSharp.IL.Metadata;
-using LSharp.IL.Collections.Generic;
-
+using System;
+using System.IO;
 using RVA = System.UInt32;
 
-namespace LSharp.IL.PE {
+namespace LSharp.IL.PE
+{
 
-	sealed class Image : IDisposable {
+    public sealed class Image : IDisposable
+    {
 
-		public Disposable<Stream> Stream;
-		public string FileName;
+        public Disposable<Stream> Stream;
+        public string FileName;
 
-		public ModuleKind Kind;
-		public string RuntimeVersion;
-		public TargetArchitecture Architecture;
-		public ModuleCharacteristics Characteristics;
-		public ushort LinkerVersion;
-		public ushort SubSystemMajor;
-		public ushort SubSystemMinor;
+        public ModuleKind Kind;
+        public string RuntimeVersion;
+        public TargetArchitecture Architecture;
+        public ModuleCharacteristics Characteristics;
+        public ushort LinkerVersion;
+        public ushort SubSystemMajor;
+        public ushort SubSystemMinor;
 
-		public ImageDebugHeader DebugHeader;
+        public ImageDebugHeader DebugHeader;
 
-		public Section [] Sections;
+        public Section[] Sections;
 
-		public Section MetadataSection;
+        public Section MetadataSection;
 
-		public uint EntryPointToken;
-		public uint Timestamp;
-		public ModuleAttributes Attributes;
+        public uint EntryPointToken;
+        public uint Timestamp;
+        public ModuleAttributes Attributes;
 
-		public DataDirectory Win32Resources;
-		public DataDirectory Debug;
-		public DataDirectory Resources;
-		public DataDirectory StrongName;
+        public DataDirectory Win32Resources;
+        public DataDirectory Debug;
+        public DataDirectory Resources;
+        public DataDirectory StrongName;
 
-		public StringHeap StringHeap;
-		public BlobHeap BlobHeap;
-		public UserStringHeap UserStringHeap;
-		public GuidHeap GuidHeap;
-		public TableHeap TableHeap;
-		public PdbHeap PdbHeap;
+        public StringHeap StringHeap;
+        public BlobHeap BlobHeap;
+        public UserStringHeap UserStringHeap;
+        public GuidHeap GuidHeap;
+        public TableHeap TableHeap;
+        public PdbHeap PdbHeap;
+        private readonly int[] coded_index_sizes = new int[14];
+        private readonly Func<Table, int> counter;
 
-		readonly int [] coded_index_sizes = new int [14];
+        public Image()
+        {
+            counter = GetTableLength;
+        }
 
-		readonly Func<Table, int> counter;
+        public bool HasTable(Table table)
+        {
+            return GetTableLength(table) > 0;
+        }
 
-		public Image ()
-		{
-			counter = GetTableLength;
-		}
+        public int GetTableLength(Table table)
+        {
+            return (int)TableHeap[table].Length;
+        }
 
-		public bool HasTable (Table table)
-		{
-			return GetTableLength (table) > 0;
-		}
+        public int GetTableIndexSize(Table table)
+        {
+            return GetTableLength(table) < 65536 ? 2 : 4;
+        }
 
-		public int GetTableLength (Table table)
-		{
-			return (int) TableHeap [table].Length;
-		}
+        public int GetCodedIndexSize(CodedIndex coded_index)
+        {
+            int index = (int)coded_index;
+            int size = coded_index_sizes[index];
+            if (size != 0)
+            {
+                return size;
+            }
 
-		public int GetTableIndexSize (Table table)
-		{
-			return GetTableLength (table) < 65536 ? 2 : 4;
-		}
+            return coded_index_sizes[index] = coded_index.GetSize(counter);
+        }
 
-		public int GetCodedIndexSize (CodedIndex coded_index)
-		{
-			var index = (int) coded_index;
-			var size = coded_index_sizes [index];
-			if (size != 0)
-				return size;
+        public uint ResolveVirtualAddress(RVA rva)
+        {
+            Section section = GetSectionAtVirtualAddress(rva);
+            if (section == null)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
 
-			return coded_index_sizes [index] = coded_index.GetSize (counter);
-		}
+            return ResolveVirtualAddressInSection(rva, section);
+        }
 
-		public uint ResolveVirtualAddress (RVA rva)
-		{
-			var section = GetSectionAtVirtualAddress (rva);
-			if (section == null)
-				throw new ArgumentOutOfRangeException ();
+        public uint ResolveVirtualAddressInSection(RVA rva, Section section)
+        {
+            return rva + section.PointerToRawData - section.VirtualAddress;
+        }
 
-			return ResolveVirtualAddressInSection (rva, section);
-		}
+        public Section GetSection(string name)
+        {
+            Section[] sections = this.Sections;
+            for (int i = 0; i < sections.Length; i++)
+            {
+                Section section = sections[i];
+                if (section.Name == name)
+                {
+                    return section;
+                }
+            }
 
-		public uint ResolveVirtualAddressInSection (RVA rva, Section section)
-		{
-			return rva + section.PointerToRawData - section.VirtualAddress;
-		}
+            return null;
+        }
 
-		public Section GetSection (string name)
-		{
-			var sections = this.Sections;
-			for (int i = 0; i < sections.Length; i++) {
-				var section = sections [i];
-				if (section.Name == name)
-					return section;
-			}
+        public Section GetSectionAtVirtualAddress(RVA rva)
+        {
+            Section[] sections = this.Sections;
+            for (int i = 0; i < sections.Length; i++)
+            {
+                Section section = sections[i];
+                if (rva >= section.VirtualAddress && rva < section.VirtualAddress + section.SizeOfRawData)
+                {
+                    return section;
+                }
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public Section GetSectionAtVirtualAddress (RVA rva)
-		{
-			var sections = this.Sections;
-			for (int i = 0; i < sections.Length; i++) {
-				var section = sections [i];
-				if (rva >= section.VirtualAddress && rva < section.VirtualAddress + section.SizeOfRawData)
-					return section;
-			}
+        private BinaryStreamReader GetReaderAt(RVA rva)
+        {
+            Section section = GetSectionAtVirtualAddress(rva);
+            if (section == null)
+            {
+                return null;
+            }
 
-			return null;
-		}
+            BinaryStreamReader reader = new BinaryStreamReader(Stream.value);
+            reader.MoveTo(ResolveVirtualAddressInSection(rva, section));
+            return reader;
+        }
 
-		BinaryStreamReader GetReaderAt (RVA rva)
-		{
-			var section = GetSectionAtVirtualAddress (rva);
-			if (section == null)
-				return null;
+        public TRet GetReaderAt<TItem, TRet>(RVA rva, TItem item, Func<TItem, BinaryStreamReader, TRet> read) where TRet : class
+        {
+            long position = Stream.value.Position;
+            try
+            {
+                BinaryStreamReader reader = GetReaderAt(rva);
+                if (reader == null)
+                {
+                    return null;
+                }
 
-			var reader = new BinaryStreamReader (Stream.value);
-			reader.MoveTo (ResolveVirtualAddressInSection (rva, section));
-			return reader;
-		}
+                return read(item, reader);
+            }
+            finally
+            {
+                Stream.value.Position = position;
+            }
+        }
 
-		public TRet GetReaderAt<TItem, TRet> (RVA rva, TItem item, Func<TItem, BinaryStreamReader, TRet> read) where TRet : class
-		{
-			var position = Stream.value.Position;
-			try {
-				var reader = GetReaderAt (rva);
-				if (reader == null)
-					return null;
+        public bool HasDebugTables()
+        {
+            return HasTable(Table.Document)
+                || HasTable(Table.MethodDebugInformation)
+                || HasTable(Table.LocalScope)
+                || HasTable(Table.LocalVariable)
+                || HasTable(Table.LocalConstant)
+                || HasTable(Table.StateMachineMethod)
+                || HasTable(Table.CustomDebugInformation);
+        }
 
-				return read (item, reader);
-			} finally {
-				Stream.value.Position = position;
-			}
-		}
-
-		public bool HasDebugTables ()
-		{
-			return HasTable (Table.Document)
-				|| HasTable (Table.MethodDebugInformation)
-				|| HasTable (Table.LocalScope)
-				|| HasTable (Table.LocalVariable)
-				|| HasTable (Table.LocalConstant)
-				|| HasTable (Table.StateMachineMethod)
-				|| HasTable (Table.CustomDebugInformation);
-		}
-
-		public void Dispose ()
-		{
-			Stream.Dispose ();
-		}
-	}
+        public void Dispose()
+        {
+            Stream.Dispose();
+        }
+    }
 }

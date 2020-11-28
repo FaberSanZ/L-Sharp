@@ -4,25 +4,21 @@
 	DataDirectory.cs
 ====================================================================================*/
 
-using System;
+namespace LSharp.IL.PE
+{
 
-using RVA = System.UInt32;
+    public struct DataDirectory
+    {
+        public DataDirectory(uint rva, uint size)
+        {
+            VirtualAddress = rva;
+            Size = size;
+        }
 
-namespace LSharp.IL.PE {
+        public uint VirtualAddress;
+        public uint Size;
 
-	struct DataDirectory {
+        public bool IsZero => VirtualAddress == 0 && Size == 0;
 
-		public readonly RVA VirtualAddress;
-		public readonly uint Size;
-
-		public bool IsZero {
-			get { return VirtualAddress == 0 && Size == 0; }
-		}
-
-		public DataDirectory (RVA rva, uint size)
-		{
-			this.VirtualAddress = rva;
-			this.Size = size;
-		}
-	}
+    }
 }

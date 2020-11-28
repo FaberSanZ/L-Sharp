@@ -13,7 +13,7 @@ using RVA = System.UInt32;
 
 namespace LSharp.IL.Cil
 {
-    internal sealed class CodeWriter : ByteBuffer
+    public sealed class CodeWriter : ByteBuffer
     {
         private readonly RVA code_base;
         internal readonly MetadataBuilder metadata;

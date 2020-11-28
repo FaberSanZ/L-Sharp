@@ -6,7 +6,7 @@
 
 namespace LSharp.IL.Metadata
 {
-    internal enum CodedIndex
+    public enum CodedIndex
     {
         TypeDefOrRef,
         HasConstant,

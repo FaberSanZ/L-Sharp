@@ -8,7 +8,8 @@ using System;
 
 namespace LSharp.IL.PE {
 
-	class ByteBuffer {
+	public class ByteBuffer 
+	{
 
 		internal byte [] buffer;
 		internal int length;

@@ -563,7 +563,7 @@ namespace LSharp.IL
         }
     }
 
-    internal sealed class MetadataReader : ByteBuffer
+    public sealed class MetadataReader : ByteBuffer
     {
 
         internal readonly Image image;

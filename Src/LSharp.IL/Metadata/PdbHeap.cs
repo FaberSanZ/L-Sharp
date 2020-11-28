@@ -8,7 +8,7 @@ using RID = System.UInt32;
 
 namespace LSharp.IL.Metadata
 {
-    internal sealed class PdbHeap : Heap
+    public sealed class PdbHeap : Heap
     {
 
         public byte[] Id;

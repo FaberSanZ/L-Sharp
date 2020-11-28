@@ -382,7 +382,7 @@ namespace LSharp.IL
         }
     }
 
-    internal class GenericParameterConstraintCollection : Collection<GenericParameterConstraint>
+    public class GenericParameterConstraintCollection : Collection<GenericParameterConstraint>
     {
         private readonly GenericParameter generic_parameter;
 

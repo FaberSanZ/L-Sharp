@@ -146,7 +146,7 @@ namespace LSharp.IL.Cil
         }
     }
 
-    internal sealed class VariableDefinitionCollection : Collection<VariableDefinition>
+    public sealed class VariableDefinitionCollection : Collection<VariableDefinition>
     {
         private readonly MethodDefinition method;
 

@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace LSharp.IL.Cil
 {
-    internal sealed class CodeReader : BinaryStreamReader
+    public sealed class CodeReader : BinaryStreamReader
     {
 
         internal readonly MetadataReader _reader;

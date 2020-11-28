@@ -9,7 +9,7 @@ using System.Text;
 
 namespace LSharp.IL.Metadata
 {
-    internal class StringHeap : Heap
+    public class StringHeap : Heap
     {
         private readonly Dictionary<uint, string> strings = new Dictionary<uint, string>();
 

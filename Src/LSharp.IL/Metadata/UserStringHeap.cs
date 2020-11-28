@@ -4,29 +4,35 @@
 	UserStringHeap.cs
 ====================================================================================*/
 
-namespace LSharp.IL.Metadata {
+namespace LSharp.IL.Metadata
+{
 
-	sealed class UserStringHeap : StringHeap {
+    public sealed class UserStringHeap : StringHeap
+    {
 
-		public UserStringHeap (byte [] data)
-			: base (data)
-		{
-		}
+        public UserStringHeap(byte[] data)
+            : base(data)
+        {
+        }
 
-		protected override string ReadStringAt (uint index)
-		{
-			int start = (int) index;
+        protected override string ReadStringAt(uint index)
+        {
+            int start = (int)index;
 
-			uint length = (uint) (data.ReadCompressedUInt32 (ref start) & ~1);
-			if (length < 1)
-				return string.Empty;
+            uint length = (uint)(data.ReadCompressedUInt32(ref start) & ~1);
+            if (length < 1)
+            {
+                return string.Empty;
+            }
 
-			var chars = new char [length / 2];
+            char[] chars = new char[length / 2];
 
-			for (int i = start, j = 0; i < start + length; i += 2)
-				chars [j++] = (char) (data [i] | (data [i + 1] << 8));
+            for (int i = start, j = 0; i < start + length; i += 2)
+            {
+                chars[j++] = (char)(data[i] | (data[i + 1] << 8));
+            }
 
-			return new string (chars);
-		}
-	}
+            return new string(chars);
+        }
+    }
 }
