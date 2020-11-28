@@ -1,65 +1,67 @@
 // Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
+// This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 
 /*===================================================================================
 	CodeReader.cs
 ====================================================================================*/
 
 
+using LSharp.IL.Collections.Generic;
+using LSharp.IL.PE;
 using System;
 using System.Collections.Generic;
-
-using LSharp.IL.Collections.Generic;
-
-using LSharp.IL.Metadata;
-using LSharp.IL.PE;
-
-using RVA = System.UInt32;
+using System.Linq;
 
 namespace LSharp.IL.Cil
 {
     internal sealed class CodeReader : BinaryStreamReader
     {
 
-        internal readonly MetadataReader reader;
-        private int start;
-        private MethodDefinition method;
-        private MethodBody body;
+        internal readonly MetadataReader _reader;
+        internal int start;
+        internal MethodDefinition _method;
+        internal MethodBody body;
 
-        private int Offset
+
+        public CodeReader(MetadataReader reader) : base(reader.image.Stream.value)
         {
-            get { return Position - start; }
+            _reader = reader;
         }
 
-        public CodeReader(MetadataReader reader)
-            : base(reader.image.Stream.value)
-        {
-            this.reader = reader;
-        }
+        public int Offset => Position - start;
+
 
         public int MoveTo(MethodDefinition method)
         {
-            this.method = method;
-            this.reader.context = method;
-            int position = this.Position;
-            this.Position = (int)reader.image.ResolveVirtualAddress((uint)method.RVA);
+            _method = method;
+
+            _reader.context = method;
+
+            int position = Position;
+
+            Position = (int)_reader.image.ResolveVirtualAddress((uint)method.RVA);
+
             return position;
         }
 
         public void MoveBackTo(int position)
         {
-            this.reader.context = null;
-            this.Position = position;
+            _reader.context = null;
+
+            Position = position;
         }
 
         public MethodBody ReadMethodBody(MethodDefinition method)
         {
             int position = MoveTo(method);
-            this.body = new MethodBody(method);
+
+            body = new(method);
 
             ReadMethodBody();
 
             MoveBackTo(position);
-            return this.body;
+
+            return body;
         }
 
         public int ReadCodeSize(MethodDefinition method)
@@ -69,19 +71,23 @@ namespace LSharp.IL.Cil
             int code_size = ReadCodeSize();
 
             MoveBackTo(position);
+
             return code_size;
         }
 
         private int ReadCodeSize()
         {
             byte flags = ReadByte();
+
             switch (flags & 0x3)
             {
                 case 0x2: // tiny
                     return flags >> 2;
+
                 case 0x3: // fat
                     Advance(-1 + 2 + 2); // go back, 2 bytes flags, 2 bytes stack size
                     return (int)ReadUInt32();
+
                 default:
                     throw new InvalidOperationException();
             }
@@ -90,6 +96,7 @@ namespace LSharp.IL.Cil
         private void ReadMethodBody()
         {
             byte flags = ReadByte();
+
             switch (flags & 0x3)
             {
                 case 0x2: // tiny
@@ -97,53 +104,50 @@ namespace LSharp.IL.Cil
                     body.MaxStackSize = 8;
                     ReadCode();
                     break;
+
                 case 0x3: // fat
                     Advance(-1);
                     ReadFatMethod();
                     break;
+
                 default:
                     throw new InvalidOperationException();
             }
 
-            ISymbolReader symbol_reader = reader.module.symbol_reader;
+            ISymbolReader symbol_reader = _reader.module.symbol_reader;
 
-            if (symbol_reader != null && method.debug_info == null)
-            {
-                method.debug_info = symbol_reader.Read(method);
-            }
+            if (symbol_reader is not null && _method.debug_info is null)
+                _method.debug_info = symbol_reader.Read(_method);
 
-            if (method.debug_info != null)
-            {
+            if (_method.debug_info is not null)
                 ReadDebugInfo();
-            }
         }
 
         private void ReadFatMethod()
         {
             ushort flags = ReadUInt16();
+
             body.max_stack_size = ReadUInt16();
             body.code_size = (int)ReadUInt32();
-            body.local_var_token = new MetadataToken(ReadUInt32());
+            body.local_var_token = new(ReadUInt32());
             body.init_locals = (flags & 0x10) != 0;
 
-            if (body.local_var_token.RID != 0)
-            {
+            if (body.local_var_token.RID is not 0)
                 body.variables = ReadVariables(body.local_var_token);
-            }
 
             ReadCode();
 
-            if ((flags & 0x8) != 0)
-            {
+            if ((flags & 0x8) is not 0)
                 ReadSection();
-            }
         }
 
         public VariableDefinitionCollection ReadVariables(MetadataToken local_var_token)
         {
-            int position = reader.position;
-            VariableDefinitionCollection variables = reader.ReadVariables(local_var_token, method);
-            reader.position = position;
+            int position = _reader.position;
+
+            VariableDefinitionCollection variables = _reader.ReadVariables(local_var_token, _method);
+
+            _reader.position = position;
 
             return variables;
         }
@@ -154,23 +158,21 @@ namespace LSharp.IL.Cil
             int code_size = body.code_size;
 
             if (code_size < 0 || Length <= (uint)(code_size + Position))
-            {
                 code_size = 0;
-            }
 
             int end = start + code_size;
-            var instructions = body.instructions = new InstructionCollection(method, (code_size + 1) / 2);
+
+            // TODO: instructions List -> InstructionCollection
+            List<Instruction> instructions = (body.instructions = new InstructionCollection(_method, (code_size + 1) / 2)).ToArray().ToList();
 
             while (Position < end)
             {
                 int offset = Position - start;
                 OpCode opcode = ReadOpCode();
-                Instruction current = new Instruction(offset, opcode);
+                Instruction current = new(offset, opcode);
 
-                if (opcode.OperandType != OperandType.InlineNone)
-                {
+                if (opcode.OperandType is not OperandType.InlineNone)
                     current.operand = ReadOperand(current);
-                }
 
                 instructions.Add(current);
             }
@@ -181,9 +183,8 @@ namespace LSharp.IL.Cil
         private OpCode ReadOpCode()
         {
             byte il_opcode = ReadByte();
-            return il_opcode != 0xfe
-                ? OpCodes.OneByteOpCode[il_opcode]
-                : OpCodes.TwoBytesOpCode[ReadByte()];
+
+            return il_opcode is not 0xfe ? OpCodes.OneByteOpCode[il_opcode] : OpCodes.TwoBytesOpCode[ReadByte()];
         }
 
         private object ReadOperand(Instruction instruction)
@@ -194,94 +195,97 @@ namespace LSharp.IL.Cil
                     int length = ReadInt32();
                     int base_offset = Offset + (4 * length);
                     int[] branches = new int[length];
+
                     for (int i = 0; i < length; i++)
-                    {
                         branches[i] = base_offset + ReadInt32();
-                    }
 
                     return branches;
+
                 case OperandType.ShortInlineBrTarget:
                     return ReadSByte() + Offset;
+
                 case OperandType.InlineBrTarget:
                     return ReadInt32() + Offset;
+
                 case OperandType.ShortInlineI:
                     if (instruction.opcode == OpCodes.Ldc_I4_S)
-                    {
                         return ReadSByte();
-                    }
 
                     return ReadByte();
+
                 case OperandType.InlineI:
                     return ReadInt32();
+
                 case OperandType.ShortInlineR:
                     return ReadSingle();
+
                 case OperandType.InlineR:
                     return ReadDouble();
+
                 case OperandType.InlineI8:
                     return ReadInt64();
+
                 case OperandType.ShortInlineVar:
                     return GetVariable(ReadByte());
+
                 case OperandType.InlineVar:
                     return GetVariable(ReadUInt16());
+
                 case OperandType.ShortInlineArg:
                     return GetParameter(ReadByte());
+
                 case OperandType.InlineArg:
                     return GetParameter(ReadUInt16());
+
                 case OperandType.InlineSig:
                     return GetCallSite(ReadToken());
+
                 case OperandType.InlineString:
                     return GetString(ReadToken());
+
                 case OperandType.InlineTok:
                 case OperandType.InlineType:
                 case OperandType.InlineMethod:
                 case OperandType.InlineField:
-                    return reader.LookupToken(ReadToken());
+                    return _reader.LookupToken(ReadToken());
+
                 default:
                     throw new NotSupportedException();
             }
         }
 
-        public string GetString(MetadataToken token)
-        {
-            return reader.image.UserStringHeap.Read(token.RID);
-        }
+        public string GetString(MetadataToken token) => _reader.image.UserStringHeap.Read(token.RID);
 
-        public ParameterDefinition GetParameter(int index)
-        {
-            return body.GetParameter(index);
-        }
 
-        public VariableDefinition GetVariable(int index)
-        {
-            return body.GetVariable(index);
-        }
+        public ParameterDefinition GetParameter(int index) => body.GetParameter(index);
 
-        public CallSite GetCallSite(MetadataToken token)
-        {
-            return reader.ReadCallSite(token);
-        }
 
-        private void ResolveBranches(Collection<Instruction> instructions)
+        public VariableDefinition GetVariable(int index) => body.GetVariable(index);
+
+
+        public CallSite GetCallSite(MetadataToken token) => _reader.ReadCallSite(token);
+        
+
+        private void ResolveBranches(List<Instruction> instructions)
         {
-            Instruction[] items = instructions.items;
-            int size = instructions.size;
+            int size = instructions.Count;
 
             for (int i = 0; i < size; i++)
             {
-                Instruction instruction = items[i];
+                Instruction instruction = instructions[i];
                 switch (instruction.opcode.OperandType)
                 {
                     case OperandType.ShortInlineBrTarget:
                     case OperandType.InlineBrTarget:
                         instruction.operand = GetInstruction((int)instruction.operand);
                         break;
+
                     case OperandType.InlineSwitch:
                         int[] offsets = (int[])instruction.operand;
                         Instruction[] branches = new Instruction[offsets.Length];
+
                         for (int j = 0; j < offsets.Length; j++)
-                        {
                             branches[j] = GetInstruction(offsets[j]);
-                        }
 
                         instruction.operand = branches;
                         break;
@@ -289,41 +293,35 @@ namespace LSharp.IL.Cil
             }
         }
 
-        private Instruction GetInstruction(int offset)
-        {
-            return GetInstruction(body.Instructions, offset);
-        }
+        private Instruction GetInstruction(int offset) => GetInstruction(body.Instructions.ToList(), offset);
+        
 
-        private static Instruction GetInstruction(Collection<Instruction> instructions, int offset)
+        private static Instruction GetInstruction(List<Instruction> instructions, int offset)
         {
-            int size = instructions.size;
-            Instruction[] items = instructions.items;
-            if (offset < 0 || offset > items[size - 1].offset)
-            {
+            int size = instructions.Count;
+
+            if (offset < 0 || offset > instructions[size - 1].offset)
                 return null;
-            }
 
             int min = 0;
             int max = size - 1;
+
             while (min <= max)
             {
                 int mid = min + ((max - min) / 2);
-                Instruction instruction = items[mid];
+
+                Instruction instruction = instructions[mid];
+
                 int instruction_offset = instruction.offset;
 
                 if (offset == instruction_offset)
-                {
                     return instruction;
-                }
 
                 if (offset < instruction_offset)
-                {
                     max = mid - 1;
-                }
+
                 else
-                {
                     min = mid + 1;
-                }
             }
 
             return null;
@@ -337,28 +335,25 @@ namespace LSharp.IL.Cil
             const byte more_sects = 0x80;
 
             byte flags = ReadByte();
-            if ((flags & fat_format) == 0)
-            {
-                ReadSmallSection();
-            }
-            else
-            {
-                ReadFatSection();
-            }
 
-            if ((flags & more_sects) != 0)
-            {
+
+            if ((flags & fat_format) is 0)
+                ReadSmallSection();
+            else
+                ReadFatSection();
+
+
+            if ((flags & more_sects) is not 0)
                 ReadSection();
-            }
         }
 
         private void ReadSmallSection()
         {
             int count = ReadByte() / 12;
+
             Advance(2);
 
-            ReadExceptionHandlers(
-                count,
+            ReadExceptionHandlers(count,
                 () => ReadUInt16(),
                 () => ReadByte());
         }
@@ -368,10 +363,7 @@ namespace LSharp.IL.Cil
             Advance(-1);
             int count = (ReadInt32() >> 8) / 24;
 
-            ReadExceptionHandlers(
-                count,
-                ReadInt32,
-                ReadInt32);
+            ReadExceptionHandlers(count, ReadInt32, ReadInt32);
         }
 
         // inline ?
@@ -379,19 +371,19 @@ namespace LSharp.IL.Cil
         {
             for (int i = 0; i < count; i++)
             {
-                ExceptionHandler handler = new ExceptionHandler(
-                    (ExceptionHandlerType)(read_entry() & 0x7))
+                ExceptionHandler handler = new((ExceptionHandlerType)(read_entry() & 0x7))
                 {
-                    TryStart = GetInstruction(read_entry())
-                };
-                handler.TryEnd = GetInstruction(handler.TryStart.Offset + read_length());
+                    TryStart = GetInstruction(read_entry()),
 
+                };
+
+                handler.TryEnd = GetInstruction(handler.TryStart.Offset + read_length());
                 handler.HandlerStart = GetInstruction(read_entry());
                 handler.HandlerEnd = GetInstruction(handler.HandlerStart.Offset + read_length());
 
                 ReadExceptionHandlerSpecific(handler);
 
-                this.body.ExceptionHandlers.Add(handler);
+                body.ExceptionHandlers.Add(handler);
             }
         }
 
@@ -400,148 +392,126 @@ namespace LSharp.IL.Cil
             switch (handler.HandlerType)
             {
                 case ExceptionHandlerType.Catch:
-                    handler.CatchType = (TypeReference)reader.LookupToken(ReadToken());
+                    handler.CatchType = _reader.LookupToken(ReadToken()) as TypeReference;
                     break;
+
                 case ExceptionHandlerType.Filter:
                     handler.FilterStart = GetInstruction(ReadInt32());
                     break;
+
                 default:
                     Advance(4);
                     break;
             }
         }
 
-        public MetadataToken ReadToken()
-        {
-            return new MetadataToken(ReadUInt32());
-        }
+        public MetadataToken ReadToken() => new MetadataToken(ReadUInt32());
+        
 
         private void ReadDebugInfo()
         {
-            if (method.debug_info.sequence_points != null)
-            {
+            if (_method.debug_info.sequence_points is not null)
                 ReadSequencePoints();
-            }
 
-            if (method.debug_info.scope != null)
-            {
-                ReadScope(method.debug_info.scope);
-            }
+            if (_method.debug_info.scope is not null)
+                ReadScope(_method.debug_info.scope);
 
-            if (method.custom_infos != null)
-            {
-                ReadCustomDebugInformations(method);
-            }
+            if (_method.custom_infos is not null)
+                ReadCustomDebugInformations(_method);
         }
 
         private void ReadCustomDebugInformations(MethodDefinition method)
         {
+            // TODO: Collection -> List
             Collection<CustomDebugInformation> custom_infos = method.custom_infos;
 
             for (int i = 0; i < custom_infos.Count; i++)
             {
                 StateMachineScopeDebugInformation state_machine_scope = custom_infos[i] as StateMachineScopeDebugInformation;
-                if (state_machine_scope != null)
-                {
+
+                if (state_machine_scope is not null)
                     ReadStateMachineScope(state_machine_scope);
-                }
 
                 AsyncMethodBodyDebugInformation async_method = custom_infos[i] as AsyncMethodBodyDebugInformation;
-                if (async_method != null)
-                {
+
+                if (async_method is not null)
                     ReadAsyncMethodBody(async_method);
-                }
             }
         }
 
         private void ReadAsyncMethodBody(AsyncMethodBodyDebugInformation async_method)
         {
             if (async_method.catch_handler.Offset > -1)
-            {
-                async_method.catch_handler = new InstructionOffset(GetInstruction(async_method.catch_handler.Offset));
-            }
+                async_method.catch_handler = new(GetInstruction(async_method.catch_handler.Offset));
 
+            // TODO: Collection -> List
             if (!async_method.yields.IsNullOrEmpty())
-            {
                 for (int i = 0; i < async_method.yields.Count; i++)
-                {
-                    async_method.yields[i] = new InstructionOffset(GetInstruction(async_method.yields[i].Offset));
-                }
-            }
+                    async_method.yields[i] = new(GetInstruction(async_method.yields[i].Offset));
 
+            // TODO: Collection -> List
             if (!async_method.resumes.IsNullOrEmpty())
-            {
                 for (int i = 0; i < async_method.resumes.Count; i++)
-                {
-                    async_method.resumes[i] = new InstructionOffset(GetInstruction(async_method.resumes[i].Offset));
-                }
-            }
+                    async_method.resumes[i] = new(GetInstruction(async_method.resumes[i].Offset));
         }
 
         private void ReadStateMachineScope(StateMachineScopeDebugInformation state_machine_scope)
         {
+            // TODO: Collection -> List
             if (state_machine_scope.scopes.IsNullOrEmpty())
-            {
                 return;
-            }
 
             foreach (StateMachineScope scope in state_machine_scope.scopes)
             {
-                scope.start = new InstructionOffset(GetInstruction(scope.start.Offset));
+                scope.start = new(GetInstruction(scope.start.Offset));
 
                 Instruction end_instruction = GetInstruction(scope.end.Offset);
-                scope.end = end_instruction == null
-                    ? new InstructionOffset()
-                    : new InstructionOffset(end_instruction);
+
+                scope.end = end_instruction is null ? new() : new(end_instruction);
             }
         }
 
         private void ReadSequencePoints()
         {
-            MethodDebugInformation symbol = method.debug_info;
+            MethodDebugInformation symbol = _method.debug_info;
 
             for (int i = 0; i < symbol.sequence_points.Count; i++)
             {
                 SequencePoint sequence_point = symbol.sequence_points[i];
                 Instruction instruction = GetInstruction(sequence_point.Offset);
-                if (instruction != null)
-                {
-                    sequence_point.offset = new InstructionOffset(instruction);
-                }
+
+                if (instruction is not null)
+                    sequence_point.offset = new(instruction);
             }
         }
 
         private void ReadScopes(Collection<ScopeDebugInformation> scopes)
         {
             for (int i = 0; i < scopes.Count; i++)
-            {
                 ReadScope(scopes[i]);
-            }
         }
 
         private void ReadScope(ScopeDebugInformation scope)
         {
             Instruction start_instruction = GetInstruction(scope.Start.Offset);
-            if (start_instruction != null)
-            {
-                scope.Start = new InstructionOffset(start_instruction);
-            }
+
+            if (start_instruction is not null)
+                scope.Start = new(start_instruction);
 
             Instruction end_instruction = GetInstruction(scope.End.Offset);
-            scope.End = end_instruction != null
-                ? new InstructionOffset(end_instruction)
-                : new InstructionOffset();
 
+            scope.End = end_instruction is not null ? new(end_instruction) : new();
+
+            // TODO: Collection -> List
             if (!scope.variables.IsNullOrEmpty())
             {
                 for (int i = 0; i < scope.variables.Count; i++)
                 {
                     VariableDebugInformation variable_info = scope.variables[i];
                     VariableDefinition variable = GetVariable(variable_info.Index);
-                    if (variable != null)
-                    {
-                        variable_info.index = new VariableIndex(variable);
-                    }
+
+                    if (variable is not null)
+                        variable_info.index = new(variable);
                 }
             }
 
@@ -555,7 +525,7 @@ namespace LSharp.IL.Cil
         {
             int position = MoveTo(method);
 
-            ByteBuffer buffer = new ByteBuffer();
+            ByteBuffer buffer = new();
 
             byte flags = ReadByte();
 
@@ -567,10 +537,12 @@ namespace LSharp.IL.Cil
                     code_size = flags >> 2;
                     PatchRawCode(buffer, code_size, writer);
                     break;
+
                 case 0x3: // fat
                     Advance(-1);
                     PatchRawFatMethod(buffer, writer, out code_size, out local_var_token);
                     break;
+
                 default:
                     throw new NotSupportedException();
             }
@@ -592,21 +564,16 @@ namespace LSharp.IL.Cil
             if (local_var_token.RID > 0)
             {
                 VariableDefinitionCollection variables = ReadVariables(local_var_token);
-                buffer.WriteUInt32(variables != null
-                    ? writer.GetStandAloneSignature(variables).ToUInt32()
-                    : 0);
+                buffer.WriteUInt32(variables is not null ? writer.GetStandAloneSignature(variables).ToUInt32() : 0);
             }
             else
-            {
                 buffer.WriteUInt32(0);
-            }
 
             PatchRawCode(buffer, code_size, writer);
 
-            if ((flags & 0x8) != 0)
-            {
+            if ((flags & 0x8) is not 0)
                 PatchRawSection(buffer, writer.metadata);
-            }
+
         }
 
         private void PatchRawCode(ByteBuffer buffer, int code_size, CodeWriter writer)
@@ -620,10 +587,9 @@ namespace LSharp.IL.Cil
             {
                 OpCode opcode;
                 byte il_opcode = buffer.ReadByte();
-                if (il_opcode != 0xfe)
-                {
+
+                if (il_opcode is not 0xfe)
                     opcode = OpCodes.OneByteOpCode[il_opcode];
-                }
                 else
                 {
                     byte il_opcode2 = buffer.ReadByte();
@@ -638,44 +604,49 @@ namespace LSharp.IL.Cil
                     case OperandType.ShortInlineArg:
                         buffer.position += 1;
                         break;
+
                     case OperandType.InlineVar:
                     case OperandType.InlineArg:
                         buffer.position += 2;
                         break;
+
                     case OperandType.InlineBrTarget:
                     case OperandType.ShortInlineR:
                     case OperandType.InlineI:
                         buffer.position += 4;
                         break;
+
                     case OperandType.InlineI8:
                     case OperandType.InlineR:
                         buffer.position += 8;
                         break;
+
                     case OperandType.InlineSwitch:
                         int length = buffer.ReadInt32();
                         buffer.position += length * 4;
                         break;
+
                     case OperandType.InlineString:
-                        string @string = GetString(new MetadataToken(buffer.ReadUInt32()));
+                        string @string = GetString(new(buffer.ReadUInt32()));
                         buffer.position -= 4;
-                        buffer.WriteUInt32(
-                            new MetadataToken(
-                                TokenType.String,
-                                metadata.user_string_heap.GetStringIndex(@string)).ToUInt32());
+                        buffer.WriteUInt32(new MetadataToken(TokenType.String, metadata.user_string_heap.GetStringIndex(@string)).ToUInt32());
                         break;
+
                     case OperandType.InlineSig:
                         CallSite call_site = GetCallSite(new MetadataToken(buffer.ReadUInt32()));
                         buffer.position -= 4;
                         buffer.WriteUInt32(writer.GetStandAloneSignature(call_site).ToUInt32());
                         break;
+
                     case OperandType.InlineTok:
                     case OperandType.InlineType:
                     case OperandType.InlineMethod:
                     case OperandType.InlineField:
-                        IMetadataTokenProvider provider = reader.LookupToken(new MetadataToken(buffer.ReadUInt32()));
+                        IMetadataTokenProvider provider = _reader.LookupToken(new(buffer.ReadUInt32()));
                         buffer.position -= 4;
                         buffer.WriteUInt32(metadata.LookupToken(provider).ToUInt32());
                         break;
+
                 }
             }
         }
@@ -683,33 +654,35 @@ namespace LSharp.IL.Cil
         private void PatchRawSection(ByteBuffer buffer, MetadataBuilder metadata)
         {
             int position = Position;
+
             Align(4);
+
             buffer.WriteBytes(Position - position);
 
             const byte fat_format = 0x40;
             const byte more_sects = 0x80;
 
             byte flags = ReadByte();
+
             if ((flags & fat_format) == 0)
             {
                 buffer.WriteByte(flags);
                 PatchRawSmallSection(buffer, metadata);
             }
             else
-            {
                 PatchRawFatSection(buffer, metadata);
-            }
 
-            if ((flags & more_sects) != 0)
-            {
+            if ((flags & more_sects) is not 0)
                 PatchRawSection(buffer, metadata);
-            }
+
         }
 
         private void PatchRawSmallSection(ByteBuffer buffer, MetadataBuilder metadata)
         {
             byte length = ReadByte();
+
             buffer.WriteByte(length);
+
             Advance(2);
 
             buffer.WriteUInt16(0);
@@ -722,7 +695,9 @@ namespace LSharp.IL.Cil
         private void PatchRawFatSection(ByteBuffer buffer, MetadataBuilder metadata)
         {
             Advance(-1);
+
             int length = ReadInt32();
+
             buffer.WriteInt32(length);
 
             int count = (length >> 8) / 24;
@@ -738,6 +713,7 @@ namespace LSharp.IL.Cil
             for (int i = 0; i < count; i++)
             {
                 ExceptionHandlerType handler_type;
+
                 if (fat_entry)
                 {
                     uint type = ReadUInt32();
@@ -756,9 +732,10 @@ namespace LSharp.IL.Cil
                 switch (handler_type)
                 {
                     case ExceptionHandlerType.Catch:
-                        IMetadataTokenProvider exception = reader.LookupToken(ReadToken());
+                        IMetadataTokenProvider exception = _reader.LookupToken(ReadToken());
                         buffer.WriteUInt32(metadata.LookupToken(exception).ToUInt32());
                         break;
+
                     default:
                         buffer.WriteUInt32(ReadUInt32());
                         break;
