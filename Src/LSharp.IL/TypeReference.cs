@@ -1,8 +1,7 @@
+// This code has been based from the sample repository "cecil": https://github.com/jbevain/cecil
 // Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
+// This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 
-/*===================================================================================
-	MetadataType.cs
-====================================================================================*/
 
 using LSharp.IL.Collections.Generic;
 using LSharp.IL.Metadata;
@@ -345,7 +344,7 @@ namespace LSharp.IL
         }
     }
 
-    internal static partial class Mixin
+    static partial class Mixinn
     {
 
         public static bool IsPrimitive(this ElementType self)

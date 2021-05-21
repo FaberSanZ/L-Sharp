@@ -1,8 +1,7 @@
+// This code has been based from the sample repository "cecil": https://github.com/jbevain/cecil
 // Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
+// This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 
-/*===================================================================================
-	AssemblyNameReference.cs
-====================================================================================*/
 
 using System;
 using System.Globalization;
@@ -292,7 +291,7 @@ namespace LSharp.IL
         }
     }
 
-    internal partial class Mixin
+    internal static partial class Mixin
     {
 
         public static Version ZeroVersion = new Version(0, 0, 0, 0);

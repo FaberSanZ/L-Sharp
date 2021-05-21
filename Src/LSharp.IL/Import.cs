@@ -1,8 +1,7 @@
+// This code has been based from the sample repository "cecil": https://github.com/jbevain/cecil
 // Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
+// This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 
-/*===================================================================================
-	IMetadataImporterProvider.cs
-====================================================================================*/
 
 using System;
 using System.Collections.Generic;
@@ -126,7 +125,7 @@ namespace LSharp.IL
 
 		public DefaultReflectionImporter (ModuleDefinition module)
 		{
-			Mixin.CheckModule (module);
+			Mixinn.CheckModule (module);
 
 			this.module = module;
 		}
@@ -479,7 +478,7 @@ namespace LSharp.IL
 
 		public DefaultMetadataImporter (ModuleDefinition module)
 		{
-			Mixin.CheckModule (module);
+			Mixinn.CheckModule (module);
 
 			this.module = module;
 		}
@@ -744,12 +743,13 @@ namespace LSharp.IL
 		}
 	}
 
-	static partial class Mixin {
+	 internal static partial class Mixinn 
+	{
 
 		public static void CheckModule (ModuleDefinition module)
 		{
 			if (module == null)
-				throw new ArgumentNullException (Argument.module.ToString ());
+				throw new ArgumentNullException (Mixin.Argument.module.ToString ());
 		}
 
 		public static bool TryGetAssemblyNameReference (this ModuleDefinition module, AssemblyNameReference name_reference, out AssemblyNameReference assembly_reference)

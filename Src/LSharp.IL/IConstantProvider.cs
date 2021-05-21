@@ -1,8 +1,6 @@
+// This code has been based from the sample repository "cecil": https://github.com/jbevain/cecil
 // Copyright (c) 2020 - 2021 Faber Leonardo. All Rights Reserved. https://github.com/FaberSanZ
-
-/*===================================================================================
-	IConstantProvider.cs
-====================================================================================*/
+// This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 
 namespace LSharp.IL
 {
