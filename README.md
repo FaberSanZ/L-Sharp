@@ -7,6 +7,9 @@
   
 </h1>
 
+> :warning: This project is not in active development and is still incomplete and far from a stable version.
+
+
 
 ![Sample](https://github.com/FaberSanZ/L-Sharp/blob/master/IMG/sample.PNG)
 <hr>
