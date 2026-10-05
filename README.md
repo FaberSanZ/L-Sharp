@@ -3,12 +3,12 @@
    L#
   <br>
   
-  ##  The .NET Compiler ("L-Sharp")
+  ##  The .NET Compiler ("L-Sharp") "OLD"
   
 </h1>
 
 
-![Sample](https://github.com/FaberSanZ/L-Sharp/blob/master/IMG/sample.PNG)
+![Sample](IMG/sample.PNG)
 <hr>
 
 
