@@ -1,0 +1,288 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+name: L#
+scopeName: source.zk
+fileTypes: [zk]
+uuid: 582789B5-991D-49E1-8E39-54327B3DBDFF
+
+patterns:
+- include: '#comment'
+- include: '#extension-declaration'
+- include: '#control-keywords'
+- include: '#keywords'
+- include: '#builtin-types'
+- include: '#vector-types'
+- include: '#inline-il'
+- include: '#visibility-modifiers'
+- include: '#attribute-declaration'
+- include: '#import-declaration'
+- include: '#namespace-declaration'
+- include: '#module-declaration'
+- include: '#function-declaration'
+- include: '#invoke-declaration'
+- include: '#type-declaration'
+- include: '#inherit-declarations'
+- include: '#keywords'
+- include: '#literals'
+
+repository:
+  builtin-types:
+    match: \b(bool|let|void|float|int|object|string|function)\b
+    captures:
+      '1': {name: keyword.type.zk}
+  vector-types:
+    match: \b(f64x2|f32x4|i64x2|i32x4|i16x8|i8x16|u64x2|u32x4|u16x8|u8x16)\b
+    captures:
+      '1': {name: keyword.type.zk}
+  visibility-modifiers:
+    name: storage.modifier.zk
+    match: (?<!\.)\b(abstract|async|const|extern|fixed|internal|isolated|immutable|retainable|mutable|new|override|partial|private|protected|public|readable|transient|static|unsafe|virtual|sealed)\b
+  module-declaration:
+    patterns:
+    - match: \b(module)\b\s*([_[:alpha:]][_[:alnum:]]*)
+      captures:
+        '1': { name: keyword.other.module.zk }      
+        '2': { name: entity.name.type.module.zk }      
+  attribute-declaration:
+    patterns:
+    - match: '(@)\s*([_[:alpha:]][_[:alnum:]]*(?:\s*\.\s*[_[:alpha:]][_[:alnum:]]*)*)'
+      captures:
+        '1': { name: markup.underline.zk }      
+        '2': 
+             patterns: 
+             - match: '[_[:alpha:]][_[:alnum:]]*'
+               name: entity.name.type.attribute.zk     
+  inline-il:
+    patterns:
+    - match: '\b(unsafe)\s+(il)\b'
+      captures:
+        '1': { name: keyword.other.unsafe.zk }      
+        '2': { name: keyword.other.il.zk }      
+  import-declaration:
+    patterns:
+    - match: '\b(import)\b\s*([_[:alpha:]][_[:alnum:]]*(?:\s*\.\s*[_[:alpha:]][_[:alnum:]]*)*)'
+      captures:
+        '1': { name: keyword.other.import.zk }      
+        '2': 
+             patterns: 
+             - match: '[_[:alpha:]][_[:alnum:]]*'
+               name: entity.name.type.import.zk     
+    - match: '\b(import)\b'
+      captures:
+        '1': { name: keyword.other.import.zk }      
+  namespace-declaration:
+    patterns:
+    - match: '\b(namespace)\b\s*([_[:alpha:]][_[:alnum:]]*(?:\s*\.\s*[_[:alpha:]][_[:alnum:]]*)*)'
+      captures:
+        '1': { name: keyword.other.namespace.zk }      
+        '2': 
+             patterns: 
+             - match: '[_[:alpha:]][_[:alnum:]]*'
+               name: entity.name.type.namespace.zk     
+    - match: '\b(namespace)\b'
+      captures:
+        '1': { name: keyword.other.namespace.zk }      
+  type-declaration:
+    patterns:
+    - match: \b(class)\b\s*([_[:alpha:]][_[:alnum:]]*)
+      captures:
+        '1': { name: keyword.other.class.zk }      
+        '2': { name: entity.name.type.class.zk }      
+    - match: \b(struct)\b\s*([_[:alpha:]][_[:alnum:]]*)
+      captures:
+        '1': { name: keyword.other.struct.zk }      
+        '2': { name: entity.name.type.struct.zk }      
+    - match: \b(interface)\b\s*([_[:alpha:]][_[:alnum:]]*)
+      captures:
+        '1': { name: keyword.other.interface.zk }      
+        '2': { name: entity.name.type.interface.zk }      
+    - match: \b(enum)\b\s*([_[:alpha:]][_[:alnum:]]*)
+      captures:
+        '1': { name: keyword.other.enum.zk }      
+        '2': { name: entity.name.type.enum.zk }      
+    - name: keyword.other.union.zk
+      match: \b(union)\b
+    - name: keyword.other.struct.zk
+      match: \b(struct)\b
+    - name: keyword.other.class.zk
+      match: \b(class)\b
+    - name: keyword.other.interface.zk
+      match: \b(interface)\b
+    - name: keyword.other.enum.zk
+      match: \b(enum)\b
+  extension-declaration:
+    patterns:
+    - match: \b(extension)\b\s*([_[:alpha:]][_[:alnum:]]*)\s*(?:<[^>]*>)?\s*\b(for)\b\s*([_[:alpha:]][_[:alnum:]]*)
+      captures:
+        '1': { name: keyword.other.extension.zk }      
+        '2': { name: entity.name.type.extension.zk }      
+        '3': { name: keyword.other.for.zk }      
+        '4': { name: entity.name.type.class.zk }      
+    - match: \b(extension)\b
+      captures:
+        '1': { name: keyword.other.extension.zk }      
+  inherit-declarations:
+    patterns:
+    - match: \b(extends)\b\s*([_[:alpha:]][_[:alnum:]]*)
+      captures:
+        '1': { name: keyword.other.extends.zk }      
+        '2': { name: entity.name.type.class.zk }      
+    - match: \b(implements)\b\s*([_[:alpha:]][_[:alnum:]]*)
+      captures:
+        '1': { name: keyword.other.implements.zk }      
+        '2': { name: entity.name.type.interface.zk }      
+    - name: keyword.other.extends.zk
+      match: \b(extends)\b
+    - name: keyword.other.implements.zk
+      match: \b(implements)\b
+  function-declaration:
+    patterns:
+    - match: \b(function)\b\s*(operator)\b
+      captures:
+        '1': { name: keyword.other.function.zk }      
+        '2': { name: keyword.other.operator.zk }      
+    - match: \b(function)\b\s*([_[:alpha:]][_[:alnum:]]*)
+      captures:
+        '1': { name: keyword.other.function.zk }      
+        '2': { name: entity.name.function.cs  }      
+    - name: keyword.other.function.zk
+      match: \bfunction\b
+    - name: keyword.other.constructor.zk
+      match: \bconstructor\b
+  invoke-declaration:
+    patterns:
+    - match: '([_[:alpha:]][_[:alnum:]]*)(?:\s*\()'
+      captures:
+        '1': { name: entity.name.function.cs  }      
+  control-keywords:
+    patterns:
+      - name: keyword.control.conditional.if.zk
+        match: \bif\b
+      - name: keyword.control.conditional.then.zk
+        match: \bthen\b
+      - name: keyword.control.conditional.else.zk
+        match: \belse\b
+      - name: keyword.control.loop.do.zk
+        match: \bdo\b
+      - name: keyword.control.loop.while.zk
+        match: \bwhile\b
+      - name: keyword.control.loop.for.zk
+        match: \bfor\b
+      - name: keyword.control.try.zk
+        match: \btry\b
+      - name: keyword.control.catch.zk
+        match: \bcatch\b
+      - name: keyword.control.flow.yield.zk
+        match: \byield\b
+      - name: keyword.control.flow.return.zk
+        match: \breturn\b
+      - name: keyword.control.flow.break.zk
+        match: \bbreak\b
+      - name: keyword.control.flow.continue.zk
+        match: \bcontinue\b
+      - name: keyword.control.flow.throw.zk
+        match: \bthrow\b
+      - name: keyword.control.flow.abort.zk
+        match: \babort\b
+      - name: keyword.control.flow.switch.zk
+        match: \bswitch\b
+      - name: keyword.control.flow.case.zk
+        match: \bcase\b
+      - name: keyword.control.flow.with.zk
+        match: \bwith\b
+      - name: constant.language.boolean.true.zk
+        match: \btrue\b
+      - name: constant.language.boolean.false.zk
+        match: \bfalse\b
+      - name: constant.language.class.null.zk
+        match: \bnull\b
+  keywords:
+    name: keyword.type.zk
+    match: \b(alias|as|await|base|default|fatal|get|is|has|let|match|operator|implicit|out|params|ref|in|requires|set|sizeof|this|throws|typeof|value|var|where)\b
+  comment:
+    patterns:
+    - name: comment.block.zk
+      begin: /\*
+      beginCaptures:
+        '0': {name: punctuation.definition.comment.zk}
+      end: \*/
+      endCaptures:
+        '0': {name: punctuation.definition.comment.zk}
+    - begin: (^\s+)?(?=//)
+      beginCaptures:
+        '1': {name: punctuation.whitespace.comment.leading.zk}
+      end: (?=$)
+      patterns:
+      - name: comment.block.documentation.zk
+        begin: (?<!/)///(?!/)
+        beginCaptures:
+          '0': {name: punctuation.definition.comment.zk}
+        end: (?=$)
+      - name: comment.line.double-slash.zk
+        begin: (?<!/)//(?!/)
+        beginCaptures:
+          '0': {name: punctuation.definition.comment.zk}
+        end: (?=$)
+  literals:
+    patterns:
+      - include: '#numeric-literal'
+      - include: '#char-literal'
+      - include: '#string-literal'
+      - include: '#verbatim-string-literal'
+
+  numeric-literal:
+    patterns:
+    - name: constant.numeric.hex.zk
+      match: \b0(x|X)[0-9a-fA-F_]+(i8|i16|i32|i64|u8|u16|u32|u64)?\b
+    - name: constant.numeric.binary.zk
+      match: \b0(b|B)[01_]+(i8|i16|i32|i64|u8|u16|u32|u64)?\b
+    - name: constant.numeric.decimal.zk
+      match: \b([0-9_]+)?\.[0-9_]+((e|E)[0-9]+)?(f32|64)?\b
+    - name: constant.numeric.decimal.zk
+      match: \b[0-9_]+(e|E)[0-9_]+(f32|f64)?\b
+    - name: constant.numeric.decimal.zk
+      match: \b[0-9_]+(f32|f64)\b
+    - name: constant.numeric.decimal.zk
+      match: \b[0-9_]+(i8|i16|i32|i64|u8|u16|u32|u64)?\b
+ 
+  char-literal:
+    name: string.quoted.single.zk
+    begin: ''''
+    beginCaptures:
+      '0': {name: punctuation.definition.char.begin.zk}
+    end: (\')|((?:[^\\\n])$)
+    endCaptures:
+      '1': {name: punctuation.definition.char.end.zk}
+      '2': {name: invalid.illegal.newline.zk}
+    patterns:
+    - include: '#string-character-escape'
+ 
+  string-character-escape:
+    name: constant.character.escape.zk
+    match: \\.
+ 
+  string-literal:
+    name: string.quoted.double.zk
+    begin: (?<!\\)"
+    beginCaptures:
+      '0': {name: punctuation.definition.string.begin.zk}
+    end: (")|((?:[^\\\n])$)
+    endCaptures:
+      '1': {name: punctuation.definition.string.end.zk}
+      '2': {name: invalid.illegal.newline.zk}
+    patterns:
+    - include: '#string-character-escape'
+
+  verbatim-string-character-escape:
+    name: constant.character.escape.zk
+    match: '""'
+
+  verbatim-string-literal:
+    name: string.quoted.double.zk
+    begin: '\\"'
+    beginCaptures:
+      '0': {name: punctuation.definition.string.begin.zk}
+    end: '"'
+    endCaptures:
+      '0': {name: punctuation.definition.string.end.zk}
+    patterns:
+    - include: '#verbatim-string-character-escape'

@@ -1,0 +1,9 @@
+function Main() -> void
+{
+    let a = "before"; // string
+    print(a); // before
+
+    a = "after";
+    print(a); // after
+
+}

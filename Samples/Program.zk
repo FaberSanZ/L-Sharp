@@ -1,0 +1,12 @@
+import Core;
+import Console;
+
+namespace Sample:
+
+internal class Program
+{
+    public function Main(args: string[]) -> void 
+    {
+        Console.Print("Hello World!");
+    }
+}
